@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard - NaksheDekho Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --navbar-height: 135px;
+        }
+
+        body {
+            background: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .owner-wrapper {
+            display: flex;
+            min-height: calc(100vh - var(--navbar-height));
+            margin-top: var(--navbar-height);
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--primary-blue);
+            color: white;
+            position: fixed;
+            top: var(--navbar-height);
+            height: calc(100vh - var(--navbar-height));
+            padding: 2rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-list {
+            list-style: none;
+            flex: 1;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-btn {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background: var(--accent-cyan);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 181, 226, 0.3);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content Styling */
+        .main-container {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2.5rem 3rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1100;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            font-size: 1.5rem;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .menu-toggle:active {
+            transform: scale(0.9);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                left: calc(-1 * var(--sidebar-width));
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .sidebar.active~.menu-overlay {
+                display: block;
+                opacity: 1;
+            }
+
+            .main-container {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+
+            .admin-pill {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        .page-title h1 {
+            font-size: 2.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.25rem;
+            font-weight: 800;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .admin-pill {
+            background: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-name {
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .data-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.01);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Action Buttons */
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: #f1f5f9;
+            color: var(--primary-blue);
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 16px;
+            background: white;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+            margin-top: 1rem;
+        }
+
+        .owner-table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+        }
+
+        .owner-table th {
+            background: #fcfdfe;
+            padding: 1.25rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .owner-table td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+            color: var(--primary-blue);
+            font-size: 0.95rem;
+            background: white;
+        }
+
+        .owner-table tr:hover td {
+            background: #fbfdff;
+        }
+
+        .owner-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Column Specifics */
+        .owner-table th:first-child,
+        .owner-table td:first-child {
+            width: 30%;
+        }
+
+        /* Component Styles inside Tables */
+        .assign-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 1.5px dashed var(--accent-cyan);
+            color: var(--accent-cyan);
+            background: transparent;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .assign-btn:hover {
+            background: rgba(0, 181, 226, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .manager-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: #f0f9ff;
+            color: #0369a1;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: 1px solid #e0f2fe;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 150px;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), #0ea5e9);
+            border-radius: 10px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Better mobile labels for responsiveness */
+        @media (max-width: 1024px) {
+            :root {
+                --sidebar-width: 250px;
+            }
+
+            .sidebar {
+                left: calc(-1 * var(--sidebar-width) - 20px);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-container {
+                margin-left: 0;
+                padding: 1.5rem 1rem;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .menu-overlay.active {
+                display: block;
+                opacity: 1;
+            }
+
+            .owner-wrapper {
+                margin-top: 70px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .page-title h1 {
+                font-size: 1.8rem;
+                letter-spacing: -0.5px;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+
+    <!-- Google Analytics -->
+    <script src="/js/google-analytics.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">
+                <img src="../images/logo.png" alt="NaksheDekho Logo">
+                <div class="logo-text-group">
+                    <div class="logo-brand">Nakshe<span>Dekho</span></div>
+                    <div class="logo-slogan">design.draft.deliver</div>
+                </div>
+            </a>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item"><a href="../index.html" class="nav-link">Back to Website</a></li>
+                <span id="auth-nav-placeholder" style="display: contents;"></span>
+            </ul>
+        </div>
+    </nav>
+
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+    <div class="menu-overlay" id="menu-overlay"></div>
+    <div class="owner-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Removed redundant brand logo since it's in navbar now -->
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <button class="nav-btn active" onclick="switchTab('analytics', this)"><span>📊</span>
+                        Dashboard</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" onclick="switchTab('projects', this)"><span>📂</span> Projects</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" onclick="switchTab('services', this)"><span>💎</span> Services</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" onclick="switchTab('packages', this)"><span>📦</span> Subscription</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" onclick="switchTab('customers', this)"><span>👥</span> Customers</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" onclick="switchTab('managers', this)"><span>👷</span> Managers</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" onclick="switchTab('enquiries', this)"><span>📧</span> Enquiries</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" onclick="switchTab('visionaries', this)"><span>✨</span> Visionaries</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" onclick="switchTab('payments', this)"><span>💰</span> Payments</button>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <button class="nav-btn" onclick="logout()" style="color: #fda4af;"><span>🚪</span> Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-container">
+            <header class="top-bar">
+                <div class="page-title">
+                    <h1 id="view-title">Executive Overview</h1>
+                    <p id="view-subtitle">Monitor growth and system operations.</p>
+                </div>
+                <div class="admin-pill" style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                        <span class="admin-name" id="admin-name">Admin</span>
+                    </div>
+                    <div
+                        style="width: 40px; height: 40px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0, 181, 226, 0.3);">
+                        AD</div>
+                </div>
+            </header>
+
+            <!-- Dashboard / Analytics Tab -->
+            <section id="analytics-tab" class="tab-content active">
+                <div class="dashboard-grid" id="stats-summary">
+                    <!-- Dynamic stats populated by JS -->
+                    <div class="data-card">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="data-card">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="data-card">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+
+                <div class="data-card" style="padding-bottom: 1rem;">
+                    <h3 class="mb-2">Recent System Events</h3>
+                    <div class="table-responsive">
+                        <table class="owner-table" id="recent-table">
+                            <thead>
+                                <tr>
+                                    <th>Event Type</th>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-events-body">
+                                <tr>
+                                    <td colspan="4" class="text-center">Synchronizing live data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Tab -->
+            <section id="projects-tab" class="tab-content">
+                <div class="data-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h3>Active Interior Projects</h3>
+                        <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">Manage all client
+                            deliveries.</div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="owner-table">
+                            <thead>
+                                <tr>
+                                    <th>Project Name</th>
+                                    <th>Customer</th>
+                                    <th>Production Head</th>
+                                    <th>Stage</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-projects-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Tab -->
+            <section id="services-tab" class="tab-content">
+                <div class="data-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div>
+                            <h3>Service Inventory</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
+                                💎 Manage one-time design services that appear on the <a href="../services.html"
+                                    target="_blank" style="color: var(--accent-cyan); font-weight: 600;">Services
+                                    Page</a>
+                            </p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openPackageModal()">+ New Service</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="owner-table">
+                            <thead>
+                                <tr>
+                                    <th>Service Name</th>
+                                    <th>Area (sqft)</th>
+                                    <th>Base Price</th>
+                                    <th>Offer</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-packages-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section><!-- Subscription Tab (Subscription Plans) -->
+            <section id="packages-tab" class="tab-content">
+                <div class="data-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div>
+                            <h3>Subscription</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
+                                📦 Manage subscription plans with tiers and limits
+                            </p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openPackageModalForSubscription()">+ New
+                            Subscription</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="owner-table">
+                            <thead>
+                                <tr>
+                                    <th>Subscription Name</th>
+                                    <th>Tier</th>
+                                    <th>Price/Year</th>
+                                    <th>Projects</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-subscription-packages-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Customers Tab -->
+            <section id="customers-tab" class="tab-content">
+                <div class="data-card">
+                    <h3 class="mb-2">Customer Universe</h3>
+                    <div class="table-responsive">
+                        <table class="owner-table">
+                            <thead>
+                                <tr>
+                                    <th>Full Identity</th>
+                                    <th>Communication</th>
+                                    <th>Registration</th>
+                                    <th>Account</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-customers-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Managers Tab -->
+            <section id="managers-tab" class="tab-content">
+                <div class="data-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h3>Manager Management</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openManagerModal()">+ New Manager
+                            Account</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="owner-table">
+                            <thead>
+                                <tr>
+                                    <th>Manager Details</th>
+                                    <th>Contact Information</th>
+                                    <th>Active Projects</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-managers-body">
+                                <tr>
+                                    <td colspan="4" style="text-align: center;">Loading managers...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enquiries Tab -->
+            <section id="enquiries-tab" class="tab-content">
+                <div class="data-card">
+                    <h3 class="mb-2">General Enquiries</h3>
+                    <div class="table-responsive">
+                        <table class="owner-table">
+                            <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Message Brief</th>
+                                    <th>Incoming On</th>
+                                    <th>Follow-up</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-enquiries-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Payments Tab -->
+            <section id="payments-tab" class="tab-content">
+                <div class="data-card">
+                    <h3 class="mb-2">Transaction History</h3>
+                    <div class="table-responsive">
+                        <table class="owner-table">
+                            <thead>
+                                <tr>
+                                    <th>Payment Details</th>
+                                    <th>Customer & Project</th>
+                                    <th>Amount</th>
+                                    <th>Transaction Ref</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-payments-body">
+                                <tr>
+                                    <td colspan="5" style="text-align: center;">Loading payments...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visionaries Tab -->
+            <section id="visionaries-tab" class="tab-content">
+                <div class="data-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <h3>Meet Our Visionaries Management</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">Manage the team showcased on the
+                                home page.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openVisionaryModal()">+ Add Visionary</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="owner-table">
+                            <thead>
+                                <tr>
+                                    <th>Identity</th>
+                                    <th>Profession</th>
+                                    <th>Experience</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-visionaries-body">
+                                <tr>
+                                    <td colspan="5" style="text-align: center;">Loading visionaries...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals (Functional Backends) -->
+    <div id="pkg-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('pkg-modal')">&times;</span>
+            <h2 id="modal-title">Service Configuration</h2>
+            <form id="pkg-form" onsubmit="handlePackageSave(event)">
+                <input type="hidden" id="edit-id">
+                <div id="service-specific-fields">
+                    <div class="form-group">
+                        <label class="form-label" for="p-name">Service Name</label>
+                        <input type="text" id="p-name" class="form-input"
+                            placeholder="Ex: Premium 2BHK Interior Design">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label class="form-label">Sqft Coverage</label>
+                            <input type="number" id="p-area" class="form-input" placeholder="0"
+                                oninput="calculatePriceFromRate()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rate (₹/sqft)</label>
+                            <input type="number" id="p-rate" class="form-input" placeholder="0"
+                                oninput="calculatePriceFromRate()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Total Price</label>
+                            <input type="number" id="p-price" class="form-input" placeholder="Auto-calc" readonly
+                                style="background: #f8fafc; cursor: not-allowed; font-weight: 700;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Inclusions Scope</label>
+                        <textarea id="p-desc" class="form-textarea" placeholder="List what's included..."></textarea>
+                    </div>
+
+                </div>
+
+
+
+                <!-- Subscription Configuration Section -->
+                <div style="border-top: 2px solid #f1f5f9; padding-top: 1.5rem; margin-top: 1rem;"
+                    id="subscription-toggle-container">
+                    <h3 style="font-size: 1.1rem; color: var(--primary-blue); margin-bottom: 1rem;">📦 Subscription
+                        Settings</h3>
+
+                    <div class="form-group">
+                        <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="p-is-subscription" style="width: auto;">
+                            <span>This is a Subscription Plan</span>
+                        </label>
+                        <small
+                            style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-top: 0.5rem;">
+                            💡 Enable for recurring subscription plans shown on Subscription page
+                        </small>
+                    </div>
+
+                    <div id="subscription-fields" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Subscription Name</label>
+                            <input type="text" id="p-sub-name" class="form-input"
+                                placeholder="Ex: Standard Subscription Plan">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Yearly Price (INR)</label>
+                            <input type="number" id="p-sub-price" class="form-input" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Subscription Tier</label>
+                            <select id="p-tier" class="form-select">
+                                <option value="">Select Tier</option>
+                                <option value="FREE">Free Plan</option>
+                                <option value="BASIC">Basic (20% OFF)</option>
+                                <option value="STANDARD">Standard (40% OFF)</option>
+                                <option value="PREMIUM">Premium (60% OFF) - Featured</option>
+                                <option value="ENTERPRISE">Enterprise (Custom)</option>
+                            </select>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label class="form-label">Max Projects(Total)</label>
+                                <input type="number" id="p-max-projects" class="form-input" min="0"
+                                    placeholder="Number of projects allowed">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Plan Duration (Days)</label>
+                                <input type="number" id="p-duration" class="form-input" min="1" value="365"
+                                    placeholder="Validity in days">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Service Discount (%)</label>
+                            <input type="number" id="p-service-discount" class="form-input" min="0" max="100"
+                                placeholder="Discount on individual services">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Commit Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="assign-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('assign-modal')">&times;</span>
+            <h2>Dispatch Project to Manager</h2>
+            <p class="mb-2">Select an available production head for this project.</p>
+            <form onsubmit="handleAssignment(event)">
+                <input type="hidden" id="assign-pid">
+                <div class="form-group">
+                    <label class="form-label">Select Resource</label>
+                    <select id="manager-select" class="form-select" required></select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Confirm Assignment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manager Creation Modal -->
+    <div id="manager-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('manager-modal')">&times;</span>
+            <h2>Register New Manager</h2>
+            <p class="mb-2">Create a new manager account for system operations.</p>
+            <form id="manager-form" onsubmit="handleManagerSave(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="m-name" class="form-input" required placeholder="Ex: John Doe">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="m-email" class="form-input" required placeholder="john@nakshedekho.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" id="m-phone" class="form-input" required placeholder="+91 0000000000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="m-password" class="form-input" required
+                        placeholder="Minimum 6 characters">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Create Manager Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Visionary Creation/Edit Modal -->
+    <div id="visionary-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('visionary-modal')">&times;</span>
+            <h2 id="v-modal-title">Visionary Configuration</h2>
+            <p class="mb-2">Manage team member details for the home page.</p>
+            <form id="visionary-form" onsubmit="handleVisionarySave(event)">
+                <input type="hidden" id="v-edit-id">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="v-name" class="form-input" required placeholder="Ex: Ayudh Sanghvi">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Profession / Role</label>
+                    <input type="text" id="v-role" class="form-input" required placeholder="Ex: Project Cordinator">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Experience (Label)</label>
+                    <input type="text" id="v-experience" class="form-input" required
+                        placeholder="Ex: 8+ Years Experience">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Profile Image</label>
+                    <input type="file" id="v-file" class="form-input" accept="image/*" style="padding: 4px;"
+                        onchange="updateFileName(this)">
+                    <input type="hidden" id="v-imageUrl">
+                    <p id="v-filename-display"
+                        style="font-size: 0.8rem; color: var(--accent-cyan); margin-top: 4px; display: none;"></p>
+                    <div id="v-preview-container" style="margin-top: 10px; display: none;">
+                        <img id="v-preview-img" src=""
+                            style="width: 100px; height: 120px; object-fit: cover; border-radius: 8px; border: 2px solid #eee;">
+                    </div>
+                    <small style="color: var(--text-muted); display: block; margin-top: 4px;">Upload a portrait image
+                        from your computer.</small>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" id="v-active" style="width: auto;" checked>
+                    <label class="form-label">Visible on Home Page</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Save Visionary</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Check Access
+        if (!requireRole('OWNER_ADMIN')) { location.href = '/login.html'; }
+
+        const user = getCurrentUser();
+        if (user) document.getElementById('admin-name').textContent = user.fullName;
+
+        // Navigation Logic
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabId + '-tab').classList.add('active');
+            el.classList.add('active');
+
+            const viewTitles = {
+                analytics: ['Executive Overview', 'Monitor growth and system operations.'],
+                projects: ['Project Dashboard', 'Oversee all active design deliveries.'],
+                services: ['Service Catalog', 'Manage one-time design services.'],
+                packages: ['Subscription', 'Manage your recurring design tiers.'],
+                customers: ['Client Directory', 'Manage user accounts and relationships.'],
+                managers: ['Production Heads', 'Control and manage system managers.'],
+                enquiries: ['Marketing Leads', 'Track and respond to new enquiries.'],
+                visionaries: ['Team Management', 'Manage members showcased on the home page.'],
+                payments: ['Financial Records', 'Monitor all customer transactions and revenue.']
+            };
+
+            document.getElementById('view-title').textContent = viewTitles[tabId][0];
+            document.getElementById('view-subtitle').textContent = viewTitles[tabId][1];
+
+            if (tabId === 'analytics') loadDashboardData();
+            if (tabId === 'projects') loadProjects();
+            if (tabId === 'services') loadServices();
+            if (tabId === 'packages') loadSubscriptionPackages();
+            if (tabId === 'customers') loadCustomers();
+            if (tabId === 'managers') loadManagers();
+            if (tabId === 'enquiries') loadEnquiries();
+            if (tabId === 'visionaries') loadVisionaries();
+            if (tabId === 'payments') loadPayments();
+        }
+
+        async function loadManagers() {
+            const body = document.getElementById('all-managers-body');
+            try {
+                const managers = await ownerAPI.getAllManagers();
+                const projects = await ownerAPI.getAllProjects();
+
+                body.innerHTML = managers.map(m => {
+                    const activeCount = projects.filter(p => p.manager && p.manager.id === m.id).length;
+                    return `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 800; color: var(--primary-blue);">${m.fullName}</div>
+                            <small style="color: var(--text-muted); opacity: 0.8;">Ref ID: #${m.id}</small>
+                        </td>
+                        <td>
+                            <div style="font-weight:600;">${m.email}</div>
+                            <small style="color:var(--accent-cyan); font-weight:700;">${m.phone || 'N/A'}</small>
+                        </td>
+                        <td>
+                            <span class="label-tag tag-blue">${activeCount} Active Projects</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <button onclick="handleDelete('manager', ${m.id})" class="icon-btn delete" title="Remove Manager">🗑️</button>
+                        </td>
+                    </tr>
+                `}).join('');
+            } catch (e) {
+                body.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--error);">Failed to load managers.</td></tr>';
+            }
+        }
+
+        async function loadDashboardData() {
+            const statsContainer = document.getElementById('stats-summary');
+            const recentBody = document.getElementById('recent-events-body');
+
+            // 1. Load Stats
+            try {
+                const stats = await ownerAPI.getAnalytics();
+                if (statsContainer) {
+                    statsContainer.innerHTML = `
+                        <div class="data-card">
+                            <p class="label-tag tag-green mb-1">Total Revenue</p>
+                            <h1 style="font-size: 2.5rem; color: #15803d;">${formatCurrency(stats.totalRevenue || 0)}</h1>
+                            <small>Net Revenue from Sales</small>
+                        </div>
+                        <div class="data-card">
+                            <p class="label-tag tag-blue mb-1">Total Projects</p>
+                            <h1 style="font-size: 2.5rem; color: var(--primary-blue);">${stats.totalProjects || 0}</h1>
+                            <small>Overall Project Lifecycle</small>
+                        </div>
+                        <div class="data-card">
+                            <p class="label-tag tag-green mb-1">Active Projects</p>
+                            <h1 style="font-size: 2.5rem; color: var(--primary-blue);">${stats.activeProjects || 0}</h1>
+                            <small>Currently in Production</small>
+                        </div>
+                        <div class="data-card">
+                            <p class="label-tag tag-orange mb-1">Managers</p>
+                            <h1 style="font-size: 2.5rem; color: var(--primary-blue);">${stats.totalManagers || 0}</h1>
+                            <small>Production Staff</small>
+                        </div>
+                        <div class="data-card">
+                            <p class="label-tag tag-blue mb-1">Customers</p>
+                            <h1 style="font-size: 2.5rem; color: var(--primary-blue);">${stats.totalCustomers || 0}</h1>
+                            <small>Active User Accounts</small>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error('Stats load failed:', e);
+                if (statsContainer) {
+                    statsContainer.innerHTML = `
+                    <div class="data-card" style="grid-column: 1/-1; text-align: center; color: #ef4444;">
+                            <p>⚠️ Failed to load statistics. ${e.message}</p>
+                            <button class="btn btn-sm btn-outline mt-1" onclick="loadDashboardData()">Retry</button>
+                    </div>
+                    `;
+                }
+            }
+
+            // 2. Load Recent Projects
+            try {
+                const projects = await ownerAPI.getAllProjects();
+                if (recentBody) {
+                    if (!projects || projects.length === 0) {
+                        recentBody.innerHTML = '<tr><td colspan="4" class="text-center" style="padding: 2rem; color: var(--text-muted);">No recent projects found.</td></tr>';
+                    } else {
+                        recentBody.innerHTML = projects.slice(0, 5).map(p => `
+                            <tr>
+                                <td><span class="label-tag tag-blue" style="font-size:0.65rem;">New Project</span></td>
+                                <td><div style="font-weight:700;">${p.projectName}</div></td>
+                                <td><span class="manager-badge" style="padding: 0.2rem 0.75rem; font-size: 0.75rem;">${p.status || 'ORDERED'}</span></td>
+                                <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : 'N/A'}</td>
+                            </tr>
+                        `).join('');
+                    }
+                }
+            } catch (e) {
+                console.error('Recent projects load failed:', e);
+                if (recentBody) {
+                    recentBody.innerHTML = '<tr><td colspan="4" class="text-center" style="color: #ef4444;">⚠️ Error loading recent projects.</td></tr>';
+                }
+            }
+        }
+
+        async function loadProjects() {
+            const body = document.getElementById('all-projects-body');
+            try {
+                const projects = await ownerAPI.getAllProjects();
+                body.innerHTML = projects.map(p => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 800; color: var(--primary-blue); line-height: 1.3;">${p.projectName}</div>
+                            ${p.requirements ? `<div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
+                                <span style="font-size:0.9rem;">📝</span>
+                                <small style="color:var(--text-muted); font-weight:500;">${p.requirements.substring(0, 60)}${p.requirements.length > 60 ? '...' : ''}</small>
+                            </div>` : ''}
+                        </td>
+                        <td>
+                            <div style="font-weight: 700;">${p.customer?.fullName || 'N/A'}</div>
+                            <small style="color: var(--text-muted);">${p.customer?.email || ''}</small>
+                        </td>
+                        <td>
+                            ${p.manager ? `
+                                <div class="manager-badge">
+                                    <span>👤</span>
+                                    <span>${p.manager.fullName}</span>
+                                    <button onclick="openAssign(${p.id}, ${p.manager.id})" style="background:none; border:none; color:var(--accent-cyan); cursor:pointer; font-size:0.7rem; margin-left:4px;">Edit</button>
+                                </div>
+                            ` : `
+                                <button onclick="openAssign(${p.id}, null)" class="assign-btn">
+                                    <span>➕</span>
+                                    <span>Assign Head</span>
+                                </button>
+                            `}
+                        </td>
+                        <td>
+                            <div class="progress-bar-container">
+                                <div class="progress-track">
+                                    <div class="progress-fill" style="width: ${p.progressPercentage || 0}%"></div>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 800; min-width: 35px;">${p.progressPercentage || 0}%</span>
+                            </div>
+                        </td>
+                        <td style="text-align: center;">
+                            <button onclick="handleDelete('project', ${p.id})" class="icon-btn delete" title="Delete Project">🗑️</button>
+                        </td>
+                    </tr>
+                    `).join('');
+            } catch (e) {
+                console.error('Projects load failed:', e);
+                if (body) body.innerHTML = '<tr><td colspan="5" class="text-center" style="padding: 3rem; color: #ef4444;">⚠️ Failed to load projects list.</td></tr>';
+            }
+        }
+
+        async function loadServices() {
+            const body = document.getElementById('all-packages-body');
+            try {
+                const pkgs = await ownerAPI.getAllPackages();
+                // Strictly exclude subscription packages
+                const services = pkgs.filter(p => p.isSubscription !== true);
+
+                body.innerHTML = services.map(p => {
+                    const hasOffer = p.discountPercentage && p.discountPercentage > 0;
+                    const isOfferValid = hasOffer && (!p.offerValidUntil || new Date(p.offerValidUntil) > new Date());
+                    return `
+                    <tr>
+                        <td style="font-weight: 700; color: var(--primary-blue);">${p.name}</td>
+                        <td>${p.areaSqft} sqft</td>
+                        <td style="color: #15803D; font-weight: 800;">${formatCurrency(p.price)}</td>
+                        <td>
+                            ${isOfferValid ? `
+                                <span class="label-tag" style="background: #FEF3C7; color: #92400e; font-size: 0.7rem;">
+                                    🎁 ${p.discountPercentage}% OFF
+                                </span>
+                            ` : '<span style="color: var(--text-muted); font-size: 0.8rem;">No offer</span>'}
+                        </td>
+                        <td><span class="status-dot" style="background: ${p.active ? '#22c55e' : '#cbd5e1'}"></span> ${p.active ? 'Active' : 'Archived'}</td>
+                        <td>
+                            <button onclick='openPkgEdit(${JSON.stringify(p)})' class="icon-btn">✏️</button>
+                            <button onclick="handleDelete('package', ${p.id})" class="icon-btn delete">🗑️</button>
+                        </td>
+                    </tr>
+                    `}).join('');
+            } catch (e) {
+                console.error('Services load failed:', e);
+                if (body) body.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#ef4444;">⚠️ Failed to load services.</td></tr>';
+            }
+        }
+
+
+        async function loadSubscriptionPackages() {
+            const body = document.getElementById('all-subscription-packages-body');
+            try {
+                const pkgs = await ownerAPI.getAllPackages();
+                // Strictly include only subscription packages
+                const packages = pkgs.filter(p => p.isSubscription === true);
+
+                // Sort by tier
+                const tierOrder = { 'FREE': 0, 'BASIC': 1, 'STANDARD': 2, 'PREMIUM': 3, 'ENTERPRISE': 4 };
+                packages.sort((a, b) => (tierOrder[a.packageTier] || 999) - (tierOrder[b.packageTier] || 999));
+
+                body.innerHTML = packages.map(p => {
+                    return `
+                    <tr>
+                        <td style="font-weight: 700; color: var(--primary-blue);">${p.name}</td>
+                        <td>
+                            <span class="label-tag tag-blue">${p.packageTier || 'N/A'}</span>
+                        </td>
+                        <td style="color: #15803D; font-weight: 800;">${formatCurrency(p.price)}/year</td>
+                        <td>
+                            <div style="font-weight: 600;">${p.maxProjects ? p.maxProjects + ' projects' : '∞ Unlimited'}</div>
+                            <small style="color: #15803d;">🎁 ${p.serviceDiscountPercentage || 0}% Off Services</small>
+                        </td>
+                        <td><span class="status-dot" style="background: ${p.active ? '#22c55e' : '#cbd5e1'}"></span> ${p.active ? 'Active' : 'Archived'}</td>
+                        <td>
+                            <button onclick='openPkgEdit(${JSON.stringify(p)})' class="icon-btn">✏️</button>
+                            <button onclick="handleDelete('package', ${p.id})" class="icon-btn delete">🗑️</button>
+                        </td>
+                    </tr>
+                    `}).join('');
+            } catch (e) {
+                console.error('Subscription packages load failed:', e);
+                if (body) body.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#ef4444;">⚠️ Failed to load subscription packages.</td></tr>';
+            }
+        }
+
+        async function loadCustomers() {
+            const body = document.getElementById('all-customers-body');
+            try {
+                const data = await ownerAPI.getAllCustomers();
+                body.innerHTML = data.map(c => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 700;">${c.fullName}</div>
+                            <div class="label-tag tag-blue" style="font-size: 0.65rem; margin-top: 4px; display: inline-block;">${c.professionalCategory || 'General'}</div>
+                            <small style="display: block; color: var(--text-muted); margin-top: 4px;">Ref: #${c.id}</small>
+                        </td>
+                        <td>${c.email}<br><small>${c.phone || 'No phone'}</small></td>
+                        <td>${new Date(c.createdAt).toLocaleDateString()}</td>
+                        <td><button onclick="handleDelete('customer', ${c.id})" class="nav-btn" style="color: #ef4444; width: fit-content; padding: 0.25rem 0.75rem;">Disable</button></td>
+                    </tr>
+                    `).join('');
+            } catch (e) {
+                console.error('Customers load failed:', e);
+                if (body) body.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ef4444;">⚠️ Failed to load customers.</td></tr>';
+            }
+        }
+
+        async function loadPayments() {
+            const body = document.getElementById('all-payments-body');
+            try {
+                const payments = await ownerAPI.getAllPayments();
+
+                if (!payments || payments.length === 0) {
+                    body.innerHTML = '<tr><td colspan="5" style="text-align: center;">No transactions found.</td></tr>';
+                    return;
+                }
+
+                body.innerHTML = payments.reverse().map(p => `
+                    <tr>
+                        <td>
+                            <div class="label-tag tag-green">${p.paymentType}</div>
+                            <small style="display:block; margin-top:0.25rem; opacity:0.7">ID: #${p.id}</small>
+                        </td>
+                        <td>
+                            <div style="font-weight: 700;">${p.project.customer.fullName}</div>
+                            <div style="font-size: 0.85rem; color: var(--accent-cyan);">${p.project.projectName}</div>
+                            <small>${p.project.customer.email}</small>
+                        </td>
+                        <td>
+                            <div style="font-size: 1.1rem; font-weight: 800; color: #15803d;">${formatCurrency(p.amount)}</div>
+                        </td>
+                        <td>
+                            <code>${p.transactionRef || 'N/A'}</code>
+                        </td>
+                        <td>
+                            ${formatDateTime(p.paymentDate || p.createdAt)}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                body.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error);">Failed to load transactions.</td></tr>';
+            }
+        }
+
+        async function loadEnquiries() {
+            const body = document.getElementById('all-enquiries-body');
+            try {
+                const data = await ownerAPI.getAllEnquiries();
+                body.innerHTML = data.map(e => `
+                    <tr>
+                    <td>
+                        <strong>${e.name}</strong><br>
+                            <small>${e.email}</small><br>
+                                <small style="color:var(--accent-cyan); font-weight:700;">${e.phone || 'No Phone'}</small>
+                            </td>
+                            <td><div style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${e.message}</div></td>
+                            <td>${new Date(e.submittedAt).toLocaleDateString()}</td>
+                            <td>
+                                ${e.contacted ? '<span class="label-tag tag-green">Done</span>' : `<button onclick="markDone(${e.id})" class="btn-sm btn-outline">Close</button>`}
+                            </td>
+                        </tr>
+                        `).join('');
+            } catch (e) { showNotification(e.message || 'Action failed', 'error'); }
+        }
+
+        async function loadVisionaries() {
+            const body = document.getElementById('all-visionaries-body');
+            try {
+                const data = await ownerAPI.getAllVisionaries();
+                body.innerHTML = data.map(v => `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <img src="${v.imageUrl || 'images/team-placeholder.jpg'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                <div style="font-weight: 700;">${v.name}</div>
+                            </div>
+                        </td>
+                        <td>${v.role}</td>
+                        <td>${v.experience}</td>
+                        <td>
+                            <span class="label-tag ${v.active ? 'tag-green' : 'tag-orange'}">${v.active ? 'Visible' : 'Hidden'}</span>
+                        </td>
+                        <td>
+                            <button onclick='openVisionaryEdit(${JSON.stringify(v)})' class="icon-btn">✏️</button>
+                            <button onclick="handleDelete('visionary', ${v.id})" class="icon-btn delete">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                body.innerHTML = '<tr><td colspan="5" style="text-align: center;">Failed to load visionaries.</td></tr>';
+            }
+        }
+
+        // Action Modals & Handlers
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+
+        function openPackageModalForSubscription() {
+            document.getElementById('pkg-form').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('p-is-subscription').checked = true;
+            document.getElementById('subscription-toggle-container').style.display = 'block';
+            document.getElementById('subscription-fields').style.display = 'block';
+            document.getElementById('service-specific-fields').style.display = 'none';
+            document.getElementById('modal-title').textContent = 'Configure New Subscription';
+
+            // Fix labels for packages
+            const nameLabel = document.querySelector("label[for='p-name']");
+            const imageLabel = document.querySelector("label[for='p-image']");
+            if (nameLabel) nameLabel.textContent = 'Subscription Name';
+            if (imageLabel) imageLabel.textContent = 'Subscription Image URL (Optional)';
+
+            document.getElementById('pkg-modal').style.display = 'flex';
+        }
+
+        function openPackageModal() {
+            document.getElementById('pkg-form').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('p-is-subscription').checked = false;
+            document.getElementById('subscription-toggle-container').style.display = 'none';
+            document.getElementById('subscription-fields').style.display = 'none';
+            document.getElementById('service-specific-fields').style.display = 'block';
+            document.getElementById('p-rate').value = ''; // Reset rate
+            document.getElementById('p-price').value = ''; // Reset price
+            document.getElementById('modal-title').textContent = 'Configure New Service';
+
+            // Reset labels for services
+            const nameLabel = document.querySelector("label[for='p-name']");
+            const imageLabel = document.querySelector("label[for='p-image']");
+            if (nameLabel) nameLabel.textContent = 'Service Name';
+            if (imageLabel) imageLabel.textContent = 'Service Image URL (Optional)';
+
+            document.getElementById('pkg-modal').style.display = 'flex';
+        }
+
+        function openPkgEdit(p) {
+            document.getElementById('edit-id').value = p.id;
+
+            // Common fields for everything
+            document.getElementById('p-discount').value = p.discountPercentage || '';
+            document.getElementById('p-offer-desc').value = p.offerDescription || '';
+            if (p.offerValidUntil) {
+                const date = new Date(p.offerValidUntil);
+                document.getElementById('p-offer-valid').value = date.toISOString().split('T')[0];
+            } else {
+                document.getElementById('p-offer-valid').value = '';
+            }
+
+            // Subscription fields logic
+            const isSub = p.isSubscription || false;
+            document.getElementById('p-is-subscription').checked = isSub;
+            document.getElementById('subscription-toggle-container').style.display = isSub ? 'block' : 'none';
+            document.getElementById('subscription-fields').style.display = isSub ? 'block' : 'none';
+            document.getElementById('service-specific-fields').style.display = isSub ? 'none' : 'block';
+
+            if (isSub) {
+                document.getElementById('p-sub-name').value = p.name;
+                document.getElementById('p-sub-price').value = p.price;
+                document.getElementById('p-tier').value = p.packageTier || '';
+                document.getElementById('p-max-projects').value = p.maxProjects || '';
+                document.getElementById('p-duration').value = p.subscriptionDurationDays || 365;
+                document.getElementById('p-service-discount').value = p.serviceDiscountPercentage || 0;
+            } else {
+                document.getElementById('p-name').value = p.name;
+                document.getElementById('p-area').value = p.areaSqft;
+                document.getElementById('p-price').value = p.price;
+                // Calculate and set rate
+                const rate = (p.areaSqft && p.areaSqft > 0) ? (p.price / p.areaSqft).toFixed(0) : '';
+                document.getElementById('p-rate').value = rate;
+
+                document.getElementById('p-desc').value = p.description;
+                document.getElementById('p-image').value = p.imageUrl || '';
+            }
+
+            document.getElementById('modal-title').textContent = isSub ? 'Edit Subscription Plan' : 'Edit Service Config';
+            document.getElementById('pkg-modal').style.display = 'flex';
+        }
+
+        async function handlePackageSave(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const isSub = document.getElementById('p-is-subscription').checked;
+
+            let data = {};
+            if (isSub) {
+                const subName = document.getElementById('p-sub-name').value;
+                const subPrice = document.getElementById('p-sub-price').value;
+
+                if (!subName || !subPrice) {
+                    showNotification('Please fill in Subscription Name and Price', 'error');
+                    return;
+                }
+
+                data = {
+                    name: subName,
+                    price: parseFloat(subPrice) || 0,
+                    isSubscription: true,
+                    areaSqft: 0,
+                    description: "Subscription package"
+                };
+            } else {
+                const serviceName = document.getElementById('p-name').value;
+                const servicePrice = document.getElementById('p-price').value;
+
+                if (!serviceName || !servicePrice) {
+                    showNotification('Please fill in Service Name and Price', 'error');
+                    return;
+                }
+
+                data = {
+                    name: serviceName,
+                    areaSqft: parseInt(document.getElementById('p-area').value) || 0,
+                    price: parseFloat(servicePrice) || 0,
+                    description: document.getElementById('p-desc').value
+                };
+            }
+
+            // Add image URL if provided
+            const imageUrl = document.getElementById('p-image').value;
+            if (imageUrl) {
+                data.imageUrl = imageUrl;
+            }
+
+            // Add offer fields if provided
+            const discount = document.getElementById('p-discount').value;
+            const offerDesc = document.getElementById('p-offer-desc').value;
+            const offerValid = document.getElementById('p-offer-valid').value;
+
+            if (discount && parseInt(discount) > 0) {
+                data.discountPercentage = parseInt(discount);
+            }
+            if (offerDesc) {
+                data.offerDescription = offerDesc;
+            }
+            if (offerValid) {
+                data.offerValidUntil = new Date(offerValid).toISOString();
+            }
+
+            // Add subscription fields
+            data.isSubscription = document.getElementById('p-is-subscription').checked;
+            if (data.isSubscription) {
+                data.packageTier = document.getElementById('p-tier').value;
+                const maxProjects = document.getElementById('p-max-projects').value;
+                if (maxProjects) data.maxProjects = parseInt(maxProjects);
+                data.subscriptionDurationDays = parseInt(document.getElementById('p-duration').value) || 365;
+                data.serviceDiscountPercentage = parseInt(document.getElementById('p-service-discount').value) || 0;
+            }
+
+            try {
+                if (id) await ownerAPI.updatePackage(id, data);
+                else await ownerAPI.createPackage(data);
+                showNotification('Inventory updated successfully.');
+                closeModal('pkg-modal');
+                loadServices();
+                loadSubscriptionPackages();
+            } catch (err) { showNotification(err.message || 'Save failed', 'error'); }
+        }
+
+        async function openAssign(pid, mid) {
+            document.getElementById('assign-pid').value = pid;
+            const sel = document.getElementById('manager-select');
+            sel.innerHTML = '<option>Searching resources...</option>';
+            document.getElementById('assign-modal').style.display = 'flex';
+            try {
+                const managers = await ownerAPI.getAllManagers();
+                sel.innerHTML = managers.map(m => `<option value="${m.id}" ${m.id === mid ? 'selected' : ''}>${m.fullName}</option>`).join('');
+            } catch (e) { sel.innerHTML = '<option>Error loading resources</option>'; }
+        }
+
+        async function handleAssignment(e) {
+            e.preventDefault();
+            const pid = document.getElementById('assign-pid').value;
+            const mid = document.getElementById('manager-select').value;
+            try {
+                await ownerAPI.assignManager(pid, mid);
+                showNotification('Project dispatched successfully.');
+                closeModal('assign-modal');
+                loadProjects();
+            } catch (e) { showNotification(e.message || 'Dispatch failed', 'error'); }
+        }
+
+        function openManagerModal() {
+            document.getElementById('manager-form').reset();
+            document.getElementById('manager-modal').style.display = 'flex';
+        }
+
+        async function handleManagerSave(e) {
+            e.preventDefault();
+            const data = {
+                fullName: document.getElementById('m-name').value,
+                email: document.getElementById('m-email').value,
+                phone: document.getElementById('m-phone').value,
+                password: document.getElementById('m-password').value,
+                role: 'MANAGER_ADMIN'
+            };
+
+            try {
+                await ownerAPI.createManager(data);
+                showNotification('Manager account created successfully.');
+                closeModal('manager-modal');
+                loadManagers();
+            } catch (err) {
+                showNotification(err.message || 'Creation failed', 'error');
+            }
+        }
+
+        function openVisionaryModal() {
+            document.getElementById('visionary-form').reset();
+            document.getElementById('v-edit-id').value = '';
+            document.getElementById('v-modal-title').textContent = 'Add New Visionary';
+            document.getElementById('visionary-modal').style.display = 'flex';
+        }
+
+        function openVisionaryEdit(v) {
+            document.getElementById('visionary-form').reset();
+            document.getElementById('v-edit-id').value = v.id;
+            document.getElementById('v-name').value = v.name;
+            document.getElementById('v-role').value = v.role;
+            document.getElementById('v-experience').value = v.experience;
+            document.getElementById('v-imageUrl').value = v.imageUrl || '';
+            document.getElementById('v-active').checked = v.active;
+            document.getElementById('v-modal-title').textContent = 'Edit Visionary';
+            document.getElementById('visionary-modal').style.display = 'flex';
+        }
+
+        async function handleVisionarySave(e) {
+            e.preventDefault();
+            const id = document.getElementById('v-edit-id').value;
+            const fileInput = document.getElementById('v-file');
+            let imageUrl = document.getElementById('v-imageUrl').value;
+
+            try {
+                // Handle file upload if a file is selected
+                if (fileInput.files.length > 0) {
+                    showNotification('Uploading image...', 'info');
+                    const uploadRes = await ownerAPI.uploadVisionaryImage(fileInput.files[0]);
+                    imageUrl = uploadRes.url;
+                }
+
+                const data = {
+                    name: document.getElementById('v-name').value,
+                    role: document.getElementById('v-role').value,
+                    experience: document.getElementById('v-experience').value,
+                    imageUrl: imageUrl,
+                    active: document.getElementById('v-active').checked
+                };
+
+                if (id) await ownerAPI.updateVisionary(id, data);
+                else await ownerAPI.createVisionary(data);
+                showNotification('Visionary team updated.');
+                closeModal('visionary-modal');
+                loadVisionaries();
+            } catch (e) {
+                showNotification('Failed to save visionary.', 'error');
+            }
+        }
+
+        async function handleDelete(type, id) {
+            if (!confirm(`Are you sure you want to remove this ${type}?`)) return;
+            try {
+                if (type === 'project') await ownerAPI.deleteProject(id);
+                if (type === 'package') await ownerAPI.deletePackage(id);
+                if (type === 'customer') await ownerAPI.deleteCustomer(id);
+                if (type === 'manager') await ownerAPI.deleteManager(id);
+                if (type === 'visionary') await ownerAPI.deleteVisionary(id);
+                showNotification('Entity removed.');
+                if (type === 'project') loadProjects();
+                if (type === 'package') {
+                    loadServices();
+                    loadSubscriptionPackages();
+                }
+                if (type === 'customer') loadCustomers();
+                if (type === 'manager') loadManagers();
+                if (type === 'visionary') loadVisionaries();
+            } catch (e) { showNotification(e.message || 'Action failed', 'error'); }
+        }
+
+        async function markDone(id) {
+            try { await ownerAPI.markEnquiryContacted(id); loadEnquiries(); } catch (e) { }
+        }
+
+
+        // Initial Load
+        // Enhanced Sidebar Toggle for Mobile
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const menuOverlay = document.getElementById('menu-overlay');
+
+        function toggleMobileMenu(forceClose = false) {
+            if (forceClose) {
+                sidebar.classList.remove('active');
+                menuToggle.innerHTML = '☰';
+                return;
+            }
+            const isActive = sidebar.classList.toggle('active');
+            menuToggle.innerHTML = isActive ? '✕' : '☰';
+        }
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => toggleMobileMenu());
+        }
+
+        if (menuOverlay) {
+            menuOverlay.addEventListener('click', () => toggleMobileMenu(true));
+        }
+
+        // Close sidebar when clicking links on mobile
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    toggleMobileMenu(true);
+                }
+            });
+        });
+
+        // Subscription toggle handler
+        document.getElementById('p-is-subscription').addEventListener('change', function () {
+            const isSub = this.checked;
+            document.getElementById('subscription-fields').style.display = isSub ? 'block' : 'none';
+            document.getElementById('service-specific-fields').style.display = isSub ? 'none' : 'block';
+        });
+
+        function updateFileName(input) {
+            const display = document.getElementById('v-filename-display');
+            const preview = document.getElementById('v-preview-container');
+            const previewImg = document.getElementById('v-preview-img');
+            if (input.files.length > 0) {
+                display.textContent = 'Selected: ' + input.files[0].name;
+                display.style.display = 'block';
+                const reader = new FileReader();
+                reader.onload = e => { previewImg.src = e.target.result; preview.style.display = 'block'; };
+                reader.readAsDataURL(input.files[0]);
+
+            } else {
+                display.style.display = 'none';
+                preview.style.display = 'none';
+
+            }
+
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboardData();
+
+            // Sidebar Toggle for Mobile
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.menu-overlay');
+
+            if (menuToggle && sidebar && overlay) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                    menuToggle.innerHTML = sidebar.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+                });
+
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                });
+            }
+
+            // Setup User Info in Top Bar
+            const user = getCurrentUser();
+            if (user) {
+                // Set name and initials
+                const nameEl = document.getElementById('admin-name');
+                const pillEl = nameEl.closest('.admin-pill').querySelector('div:last-child');
+
+                if (nameEl) nameEl.textContent = user.fullName;
+                if (pillEl) {
+                    const initials = user.fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+                    pillEl.textContent = initials.substring(0, 2);
+                }
+
+                // Show welcome notification
+                if (!sessionStorage.getItem('notified_login')) {
+                    showNotification(`Welcome back, ${user.fullName}!`, 'success');
+                    sessionStorage.setItem('notified_login', 'true');
+                }
+            }
+        });
+
+
+        function calculatePriceFromRate() {
+            const area = parseFloat(document.getElementById('p-area').value);
+            const rate = parseFloat(document.getElementById('p-rate').value);
+            const priceInput = document.getElementById('p-price');
+
+            if (area && rate && area > 0 && rate > 0) {
+                priceInput.value = Math.round(area * rate);
+            } else {
+                // Determine behavior if invalid. Keep old value or clear?
+                // existing logic sends auto-calc price.
+                // If user clears fields, maybe clear price.
+                if (!area || !rate) priceInput.value = '';
+            }
+        }
+    </script>
+</body>
+
+</html>

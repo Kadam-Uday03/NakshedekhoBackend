@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services - NaksheDekho</title>
+    <meta name="description"
+        content="Explore our premium interior design services with transparent pricing and comprehensive packages tailored to your needs.">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Services Page Specific Styles */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(10, 45, 77, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 181, 226, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 60px rgba(10, 45, 77, 0.15);
+            border-color: var(--accent-cyan);
+        }
+
+        .service-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .service-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover .service-image {
+            transform: scale(1.1);
+        }
+
+        .service-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-offer-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            animation: pulse-offer 2s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulse-offer {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .service-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-header {
+            margin-bottom: 0.75rem;
+        }
+
+        .service-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 0.25rem;
+            font-family: var(--font-heading);
+            line-height: 1.2;
+        }
+
+        .service-area {
+            display: inline-block;
+            background: rgba(0, 181, 226, 0.1);
+            color: var(--accent-cyan);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-description {
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .service-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 181, 226, 0.1);
+            margin-top: auto;
+        }
+
+        .service-price-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-price-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .service-price-original {
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            font-weight: 600;
+        }
+
+        .service-price-discounted {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #15803d;
+            font-family: var(--font-heading);
+        }
+
+        .service-price {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            font-family: var(--font-heading);
+        }
+
+        .services-loading {
+            text-align: center;
+            padding: 4rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(0, 181, 226, 0.2);
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .services-empty {
+            text-align: center;
+            padding: 4rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <!-- Google Analytics -->
+    <script src="/js/google-analytics.js"></script>
+</head>
+
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="NaksheDekho Logo">
+                <div class="logo-text-group">
+                    <div class="logo-brand">Nakshe<span>Dekho</span></div>
+                    <div class="logo-slogan">design.draft.deliver</div>
+                </div>
+            </a>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="projects.html" class="nav-link">Projects</a></li>
+                <li class="nav-item"><a href="services.html" class="nav-link active">Services</a></li>
+                <li class="nav-item"><a href="packages.html" class="nav-link">Subscription</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+                <span id="auth-nav-placeholder" style="display: contents;"></span>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1 style="color: white;">Our Premium Services</h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem;">Transparent pricing for individual design needs.
+            </p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div id="services-loading" class="services-loading">
+                <div class="spinner"></div>
+                <p>Loading services...</p>
+            </div>
+
+            <div id="services-grid" class="services-grid" style="display: none;"></div>
+
+            <div id="services-empty" class="services-empty">
+                <h3>No Services Found</h3>
+                <p>Please check back later.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>NaksheDekho</h3>
+                <p>We act as your dedicated backend team for drafting, 3D visualisation, and estimation—so you can focus
+                    on
+                    clients, design, and growth.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="about.html">About Us</a>
+                <a href="projects.html">Portfolio</a>
+                <a href="services.html">Services</a>
+                <a href="packages.html">Subscription</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: nakshedekho@gmail.com</p>
+                <p>Phone: +91 8962569111</p>
+                <p>Address: Indore, India</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <p>Instagram | Facebook | WhatsApp</p>
+                <a href="contact.html" class="btn btn-secondary mt-1">Get in Touch</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 NaksheDekho. All rights reserved. | Premium Interior Design Platform</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        let userProfile = null;
+
+        async function init() {
+            console.log('Initializing services loading...');
+            if (authAPI.isAuthenticated()) {
+                try {
+                    userProfile = await customerAPI.getProfile();
+                } catch (e) {
+                    console.error('Profile load failed', e);
+                }
+            }
+            await loadServices();
+        }
+
+        // Robust initialization
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        async function loadServices() {
+            const loadingEl = document.getElementById('services-loading');
+            const gridEl = document.getElementById('services-grid');
+            const emptyEl = document.getElementById('services-empty');
+
+            try {
+                const pkgs = await publicAPI.getPackages();
+                const services = pkgs.filter(p => !p.isSubscription);
+
+                loadingEl.style.display = 'none';
+                if (!services || services.length === 0) {
+                    emptyEl.style.display = 'block';
+                    return;
+                }
+
+                gridEl.style.display = 'grid';
+                gridEl.innerHTML = services.map(s => createServiceCard(s)).join('');
+            } catch (err) {
+                console.error('Failed to load services:', err);
+                loadingEl.style.display = 'none';
+                emptyEl.style.display = 'block';
+            }
+        }
+
+        function createServiceCard(service) {
+            let discount = 0;
+            let subActive = false;
+
+            if (userProfile && userProfile.activeSubscription) {
+                const endDate = new Date(userProfile.subscriptionEndDate);
+                const used = userProfile.projectsUsedUnderSubscription || 0;
+                const max = userProfile.activeSubscription.maxProjects;
+
+                if (endDate > new Date()) {
+                    if (!max || used < max) {
+                        discount = userProfile.activeSubscription.serviceDiscountPercentage || 0;
+                        subActive = true;
+                    }
+                }
+            }
+
+            const offerDiscount = (service.discountPercentage && (!service.offerValidUntil || new Date(service.offerValidUntil) > new Date())) ? service.discountPercentage : 0;
+            const finalDiscount = Math.max(offerDiscount, discount);
+            const finalPrice = finalDiscount > 0 ? service.price * (1 - finalDiscount / 100) : service.price;
+
+            const serviceData = JSON.stringify(service).replace(/'/g, "&apos;");
+
+            return `
+                <div class="service-card">
+                    <div class="service-image-wrapper">
+                        <img src="${service.imageUrl || 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800'}" class="service-image">
+                        ${subActive ? `<div class="service-offer-badge" style="background: #10B981;">✨ Plan Benefit: ${discount}% OFF</div>` :
+                    (offerDiscount > 0 ? `<div class="service-offer-badge">🎁 ${offerDiscount}% OFF</div>` : '')}
+                        <div class="service-badge">${service.areaSqft || 0} sqft</div>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">${service.name}</h3>
+                        <p class="service-description">${service.description || 'Professional design service.'}</p>
+                        <div class="service-footer">
+                            <div class="service-price-wrapper">
+                                <span class="service-price-label">Price</span>
+                                ${finalDiscount > 0 ? `
+                                    <span class="service-price-original">${formatCurrency(service.price)}</span>
+                                    <span class="service-price-discounted">${formatCurrency(finalPrice)}</span>
+                                ` : `<span class="service-price">${formatCurrency(service.price)}</span>`}
+                            </div>
+                            <button class="btn btn-primary btn-sm" onclick='createProjectFromService(${serviceData})'>Create Project</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function createProjectFromService(service) {
+            if (!authAPI.isAuthenticated()) {
+                localStorage.setItem('redirect_after_login', window.location.href);
+                window.location.href = '/login.html';
+                return;
+            }
+
+            if (!confirm(`Create a new project for "${service.name}"? This will be added to your dashboard.`)) return;
+
+            try {
+                // Show loading state
+                const btn = document.activeElement;
+                const originalText = btn.textContent;
+                btn.textContent = 'Creating...';
+                btn.disabled = true;
+
+                await customerAPI.createProject(service.id, service.name, service.description);
+
+                showNotification('Project created successfully!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'customer/dashboard.html?action=created';
+                }, 1000);
+            } catch (e) {
+                console.error(e);
+                showNotification('Failed to create project. Please try again.', 'error');
+                // Reset button
+                const btn = document.activeElement; // Might be lost
+                // Ideally refresh page or handle error better, but this is sufficient.
+            }
+        }
+    </script>
+</body>
+
+</html>

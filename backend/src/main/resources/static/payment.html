@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment - NaksheDekho</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+        }
+
+        .checkout-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 40px;
+            box-shadow: 0 40px 100px rgba(13, 59, 102, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .summary-card {
+            background: var(--primary-blue);
+            color: white;
+            padding: 3rem;
+            border-radius: 40px;
+            box-shadow: 0 40px 100px rgba(13, 59, 102, 0.2);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 2rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 181, 226, 0.1);
+            border-top: 5px solid var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <!-- Google Analytics -->
+    <script src="/js/google-analytics.js"></script>
+</head>
+
+<body style="background: #f0f4f8;">
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="NaksheDekho Logo">
+                <div class="logo-text-group">
+                    <div class="logo-brand">Nakshe<span>Dekho</span></div>
+                    <div class="logo-slogan">design.draft.deliver</div>
+                </div>
+            </a>
+            <div id="auth-nav-placeholder"></div>
+        </div>
+    </nav>
+
+    <div class="payment-grid" style="margin-top: 100px;">
+        <div class="checkout-card">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Finalize Your Order</h2>
+            <p style="margin-bottom: 3rem; opacity: 0.7;">Secure payment via Razorpay</p>
+
+            <div id="payment-initial-view">
+                <div
+                    style="background: #f8fafc; padding: 2rem; border-radius: 20px; border: 1px dashed var(--accent-cyan); margin-bottom: 2rem;">
+                    <p style="font-size: 0.95rem; line-height: 1.6; color: var(--primary-blue);">
+                        You are about to purchase the <strong><span id="selected-pkg-name">Premium</span></strong>
+                        package.
+                        Clicking the button below will open our secure payment gateway where you can choose between UPI,
+                        Cards, Netbanking, etc.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Billing Name</label>
+                    <input type="text" id="billing-name" class="form-input" placeholder="Enter name for invoice">
+                </div>
+
+                <button class="btn btn-secondary"
+                    style="width: 100%; padding: 1.5rem; border-radius: 20px; font-size: 1.25rem; margin-top: 1rem;"
+                    onclick="processPayment()" id="pay-btn">
+                    Proceed to Pay Now →
+                </button>
+            </div>
+
+            <div id="payment-processing-view" style="display: none; text-align: center; padding: 3rem 0;">
+                <div class="spinner" style="margin: 0 auto 2rem;"></div>
+                <h3>Secure Payment in Progress</h3>
+                <p style="opacity: 0.7; margin-top: 1rem;">Please do not refresh or close this window...</p>
+            </div>
+
+            <p style="text-align: center; margin-top: 2rem; opacity: 0.5; font-size: 0.85rem;">🔒 Secured by SSL &
+                Razorpay 256-bit Encryption</p>
+        </div>
+
+        <div class="summary-card">
+            <h3 style="color: white; margin-bottom: 2rem;">Investment Summary</h3>
+            <div id="plan-details">
+                <div class="cost-row">
+                    <span>Package Fee</span>
+                    <span id="pkg-price">₹0</span>
+                </div>
+                <div class="total-row">
+                    <span>Amount Paid</span>
+                    <span id="total-amount">₹0</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 3rem; background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 20px;">
+                <h4 style="color: var(--accent-cyan); margin-bottom: 0.5rem;">Package Benefits:</h4>
+                <ul id="benefits-list" style="list-style: none; font-size: 0.9rem; opacity: 0.9;">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        const plan = JSON.parse(localStorage.getItem('selectedPlan'));
+        if (!plan) window.location.href = 'packages.html';
+
+        // Calculate pricing
+        const price = parseFloat(plan.finalPrice || plan.price);
+        const total = price;
+
+        document.getElementById('pkg-price').textContent = formatCurrency(price);
+        document.getElementById('total-amount').textContent = formatCurrency(total);
+        document.getElementById('selected-pkg-name').textContent = plan.name;
+
+        // Benefits
+        const benefits = plan.designScope ? plan.designScope.split(',') : ['Full House Design', 'Premium Consultation'];
+        document.getElementById('benefits-list').innerHTML = benefits.slice(0, 4).map(b => `
+            <li style="margin-bottom: 0.5rem;">✅ ${b.trim()}</li>
+        `).join('');
+
+        // If logged in as customer, pre-fill name
+        if (isAuthenticated()) {
+            const user = getCurrentUser();
+            document.getElementById('billing-name').value = user.fullName;
+        }
+
+        async function processPayment() {
+            const initialView = document.getElementById('payment-initial-view');
+            const processingView = document.getElementById('payment-processing-view');
+
+            try {
+                // 1. Get Razorpay Key
+                const keyResponse = await paymentAPI.getKey();
+                const key = keyResponse.key;
+
+                if (!key || key.includes('YOUR_KEY')) {
+                    showNotification('Payment gateway configuration missing!', 'error');
+                    console.error('Please configure Razorpay keys in backend application.properties');
+                    return;
+                }
+
+                // Show processing view
+                initialView.style.display = 'none';
+                processingView.style.display = 'block';
+
+                // 2. Create Order
+                const orderData = await paymentAPI.createOrder(total);
+                console.log('Order created:', orderData);
+
+                const options = {
+                    "key": key,
+                    "amount": orderData.amount,
+                    "currency": "INR",
+                    "name": "NaksheDekho",
+                    "description": "Design Package Purchase",
+                    "order_id": orderData.id,
+                    "modal": {
+                        "ondismiss": function () {
+                            initialView.style.display = 'block';
+                            processingView.style.display = 'none';
+                        }
+                    },
+                    "handler": async function (response) {
+                        processingView.querySelector('h3').textContent = 'Confirming Payment...';
+                        await handlePaymentSuccess(response, orderData);
+                    },
+                    "prefill": {
+                        "name": document.getElementById('billing-name').value,
+                        "email": getCurrentUser()?.email || "",
+                        "contact": getCurrentUser()?.phone || ""
+                    },
+                    "theme": {
+                        "color": "#00B5E2"
+                    }
+                };
+
+                const rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response) {
+                    showNotification('Payment Failed: ' + response.error.description, 'error');
+                    initialView.style.display = 'block';
+                    processingView.style.display = 'none';
+                });
+                rzp1.open();
+
+            } catch (error) {
+                console.error('Payment initialization failed:', error);
+                showNotification('Payment initialization failed. Server might be down.', 'error');
+                initialView.style.display = 'block';
+                processingView.style.display = 'none';
+            }
+        }
+
+        async function handlePaymentSuccess(paymentResponse, orderData) {
+            if (isAuthenticated() && hasRole('CUSTOMER')) {
+                try {
+                    // Verify payment signature first
+                    const verificationResult = await paymentAPI.verifyPayment({
+                        razorpay_order_id: paymentResponse.razorpay_order_id,
+                        razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                        razorpay_signature: paymentResponse.razorpay_signature
+                    });
+
+                    if (!verificationResult.verified) {
+                        showNotification('Payment verification failed. Please contact support.', 'error');
+                        return;
+                    }
+
+                    // Create project after successful verification
+                    await customerAPI.purchasePackage({
+                        packageId: plan.id,
+                        projectName: `${plan.name} Interior Project`,
+                        requirements: `Purchased online. Ref: ${paymentResponse.razorpay_payment_id}`,
+                        advanceAmount: total,
+                        transactionId: paymentResponse.razorpay_payment_id
+                    });
+
+                    // Show appropriate success message based on package type
+                    if (plan.isSubscription) {
+                        showNotification(`🎉 Subscription activated! You now have ${plan.serviceDiscountPercentage || 0}% discount on all services.`, 'success');
+                    } else {
+                        showNotification('Payment successful! Your project has been created.', 'success');
+                    }
+
+                    localStorage.removeItem('selectedPlan');
+                    setTimeout(() => window.location.href = 'customer/dashboard.html', 1500);
+                } catch (err) {
+                    console.error('Error:', err);
+                    showNotification('Payment success but project creation failed. Contact support.', 'error');
+                }
+            } else {
+                localStorage.setItem('paymentStatus', 'COMPLETED');
+                localStorage.setItem('paidAmount', total);
+                localStorage.setItem('razorpay_payment_id', paymentResponse.razorpay_payment_id);
+                localStorage.setItem('razorpay_order_id', paymentResponse.razorpay_order_id);
+                localStorage.setItem('razorpay_signature', paymentResponse.razorpay_signature);
+                window.location.href = 'register-customer.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

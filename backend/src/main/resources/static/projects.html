@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Our Portfolio - NaksheDekho | Explore our curated collection of specialized designs across residential, commercial, and more.">
+    <title>Our Projects - NaksheDekho</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Google Analytics -->
+    <script src="/js/google-analytics.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="NaksheDekho Logo">
+                <div class="logo-text-group">
+                    <div class="logo-brand">Nakshe<span>Dekho</span></div>
+                    <div class="logo-slogan">design.draft.deliver</div>
+                </div>
+            </a>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="projects.html" class="nav-link active">Projects</a></li>
+                <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
+                <li class="nav-item"><a href="packages.html" class="nav-link">Subscription</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+                <span id="auth-nav-placeholder" style="display: contents;"></span>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container text-center">
+            <h1 style="color: white; font-size: 3.5rem;">Our Design Portfolio</h1>
+            <p style="color: white; opacity: 0.9; font-size: 1.2rem; max-width: 700px; margin: 1rem auto;">
+                Explore our curated collection of specialized designs across residential, commercial, and more.
+            </p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <!-- Category Filters -->
+            <div class="project-filters">
+                <button class="filter-btn active" onclick="filterProjects('all')">All Projects</button>
+                <button class="filter-btn" onclick="filterProjects('sample')">Sample Project</button>
+                <button class="filter-btn" onclick="filterProjects('bedroom')">3D Bedroom Design</button>
+                <button class="filter-btn" onclick="filterProjects('commercial')">3D Commercial Design</button>
+                <button class="filter-btn" onclick="filterProjects('livingroom')">3D Living Room</button>
+                <button class="filter-btn" onclick="filterProjects('residential')">3D Residential</button>
+                <button class="filter-btn" onclick="filterProjects('kidroom')">Kid Bed Room</button>
+            </div>
+
+            <div class="card-grid" id="project-grid">
+                <!-- Projects will be injected here dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Detail Modal -->
+    <div id="projectModal" class="project-modal">
+        <div class="modal-content-wrapper">
+            <div class="modal-close" onclick="closeProjectModal()">&times;</div>
+            <div class="modal-body">
+                <div class="modal-media" id="modal-media-content">
+                    <div id="modal-media-viewer"
+                        style="width: 100%; height: 500px; border-radius: 12px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; position: relative;">
+                        <!-- Image or Iframe injected here -->
+                    </div>
+                    <div class="modal-thumbnails" id="modal-thumbnails-container">
+                        <!-- Thumbnails injected here -->
+                    </div>
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-project-title">Project Title</h2>
+                    <p id="modal-project-desc">Detailed information will appear here.</p>
+                    <div id="pdf-actions" style="display: none; margin-bottom: 2rem;">
+                        <a id="view-pdf-btn" href="#" target="_blank" class="btn btn-secondary btn-sm"
+                            style="width: 100%; justify-content: center;">
+                            📄 View Full PDF Preview
+                        </a>
+                    </div>
+                    <div id="modal-project-meta" style="margin-top: 1rem;">
+                        <span class="btn btn-sm btn-primary" id="modal-category-label">Category</span>
+                        <a href="contact.html" class="btn btn-outline btn-sm" style="margin-left: 1rem;">Enquire Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>NaksheDekho</h3>
+                <p>We act as your dedicated backend team for drafting, 3D visualisation, and estimation—so you can focus
+                    on clients, design, and growth.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="about.html">About Us</a>
+                <a href="projects.html">Portfolio</a>
+                <a href="services.html">Services</a>
+                <a href="packages.html">Subscription</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: nakshedekho@gmail.com</p>
+                <p>Phone: +91 8962569111</p>
+                <p>Address: Indore, India</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <p>Instagram | Facebook | WhatsApp</p>
+                <a href="contact.html" class="btn btn-secondary mt-1">Get in Touch</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 NaksheDekho. All rights reserved. | Premium Interior Design Platform</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        const projectsData = {
+            'sample-1': {
+                title: 'Technical Drafting Set A',
+                category: 'sample',
+                categoryLabel: 'Sample Project',
+                desc: 'Detailed architectural drawings including floor plans, electrical layouts, and structural details.',
+                thumbnail: 'https://images.unsplash.com/photo-1503387762-592be5a525b7?w=800',
+                images: [
+                    'images/sample%20project%201/SN-FLOOR%20PLANS.pdf',
+                    'images/sample%20project%201/SN-ELEVATION%20DETAIL-21.10.2024.pdf',
+                    'images/sample%20project%201/SN-GF%20SLAB%20DETAIL%20DRAWING-26.7.24-Model.pdf',
+                    'images/sample%20project%201/SN-PLUMBING%20DETAIL%20DRAWING.pdf'
+                ]
+            },
+            'sample-2': {
+                title: 'Technical Drafting Set B',
+                category: 'sample',
+                categoryLabel: 'Sample Project',
+                desc: 'Specialized plumbing and electronic point documentation for residential construction.',
+                thumbnail: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800',
+                images: [
+                    'images/sample%20project%202/Final%20Floor%20Plans%2003-02-2024.pdf',
+                    'images/sample%20project%202/PLUMBING%20DETAILS.pdf',
+                    'images/sample%20project%202/WALL%20ELECTRONIC%20POINT.pdf'
+                ]
+            },
+            'bedroom-1': {
+                title: 'Elegant Master Bedroom',
+                category: 'bedroom',
+                categoryLabel: '3D Bedroom Design',
+                desc: 'Luxurious 3D bedroom visualization with bespoke furniture and ambient lighting.',
+                thumbnail: 'images/3d%20bedroom%20design%202/AK-KV-1.jpg',
+                images: [
+                    'images/3d%20bedroom%20design%202/AK-KV-1.jpg',
+                    'images/3d%20bedroom%20design%202/AK-KV-2.jpg'
+                ]
+            },
+            'bedroom-2': {
+                title: 'Modern Minimalist Suite',
+                category: 'bedroom',
+                categoryLabel: '3D Bedroom Design',
+                desc: 'Clean lines and functional design in this modern 3D bedroom concept.',
+                thumbnail: 'images/3d%20bedroom%20design%203/TEST-4_2%20-%20Photo.jpg',
+                images: [
+                    'images/3d%20bedroom%20design%203/TEST-4_2%20-%20Photo.jpg',
+                    'images/3d%20bedroom%20design%203/TEST-4_3%20-%20Photo.jpg',
+                    'images/3d%20bedroom%20design%203/TEST-4_4%20-%20Photo.jpg',
+                    'images/3d%20bedroom%20design%203/TEST-7_7%20-%20Photo.jpg'
+                ]
+            },
+            'commercial-1': {
+                title: 'Corporate Office Design',
+                category: 'commercial',
+                categoryLabel: '3D Commercial Design',
+                desc: 'Contemporary office workspace design with collaborative zones.',
+                thumbnail: 'images/3d%20commercial%20project/VIEW-1_2%20-%20Photo.jpg',
+                images: [
+                    'images/3d%20commercial%20project/VIEW-1_2%20-%20Photo.jpg',
+                    'images/3d%20commercial%20project/VIEW-1_3%20-%20Photo.jpg',
+                    'images/3d%20commercial%20project/VIEW-1_6%20-%20Photo.jpg'
+                ]
+            },
+            'commercial-2': {
+                title: 'Modern Retail Front',
+                category: 'commercial',
+                categoryLabel: '3D Commercial Design',
+                desc: 'Dynamic retail facade visualization for commercial complexes.',
+                thumbnail: 'images/3d%20commercial%20project%202/VIEW-1_1%20-%20Photo.jpg',
+                images: [
+                    'images/3d%20commercial%20project%202/VIEW-1_1%20-%20Photo.jpg',
+                    'images/3d%20commercial%20project%202/VIEW-1_2%20-%20Photo.jpg',
+                    'images/3d%20commercial%20project%202/TEST%20-%201_7%20-%20Photo.jpg'
+                ]
+            },
+            'livingroom-1': {
+                title: 'Luxury Living Space',
+                category: 'livingroom',
+                categoryLabel: '3D Living Room',
+                desc: 'High-end 3D living room rendering with realistic lighting effects.',
+                thumbnail: 'images/3d%20living%20room/TEST-9.jpg',
+                images: [
+                    'images/3d%20living%20room/TEST-9.jpg'
+                ]
+            },
+            'residential-1': {
+                title: 'Premium Villa Exterior',
+                category: 'residential',
+                categoryLabel: '3D Residential',
+                desc: 'Stunning 3D elevation and landscape render for a luxury residence.',
+                thumbnail: 'images/3d%20Residential%20projects/IMG-20241226-WA0005.jpg',
+                images: [
+                    'images/3d%20Residential%20projects/IMG-20241226-WA0005.jpg',
+                    'images/3d%20Residential%20projects/IMG-20241226-WA0006.jpg',
+                    'images/3d%20Residential%20projects/IMG-20241226-WA0010.jpg'
+                ]
+            },
+            'residential-2': {
+                title: 'Modern Estate Facade',
+                category: 'residential',
+                categoryLabel: '3D Residential',
+                desc: 'Sleek architectural visualization of a modern estate exterior.',
+                thumbnail: 'images/3d%20Residential%20project%202/VIEW-1.jpg',
+                images: [
+                    'images/3d%20Residential%20project%202/VIEW-1.jpg',
+                    'images/3d%20Residential%20project%202/V-4.jpg'
+                ]
+            },
+            'kidroom-1': {
+                title: 'Creative Kids World',
+                category: 'kidroom',
+                categoryLabel: 'Kid Bed Room',
+                desc: 'Playful and safe kids room design with optimized play and study areas.',
+                thumbnail: 'images/kids%20bed%20room/kids%20hq%202.jpg',
+                images: [
+                    'images/kids%20bed%20room/kids%20hq%202.jpg',
+                    'images/kids%20bed%20room/kids%20new%201.jpg'
+                ]
+            }
+        };
+
+        function renderGrid() {
+            const grid = document.getElementById('project-grid');
+            if (!grid) return;
+            grid.innerHTML = Object.entries(projectsData).map(([id, p]) => `
+                <div class="project-card" data-category="${p.category}">
+                    <div class="project-category-tag">${p.categoryLabel}</div>
+                    <img src="${p.thumbnail}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'">
+                    <div class="project-overlay">
+                        <h3 class="project-title-h3">${p.title}</h3>
+                        <p class="project-desc">${p.desc}</p>
+                        <div class="project-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="openProjectModal('${id}')">Explore</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProjects(c) {
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(b => b.classList.toggle('active', b.getAttribute('onclick').includes(`'${c}'`)));
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.style.display = (c === 'all' || card.dataset.category === c) ? 'block' : 'none';
+            });
+        }
+
+        function openProjectModal(id) {
+            const p = projectsData[id];
+            const modal = document.getElementById('projectModal');
+            document.getElementById('modal-project-title').innerText = p.title;
+            document.getElementById('modal-project-desc').innerText = p.desc;
+            document.getElementById('modal-category-label').innerText = p.categoryLabel;
+
+            updateViewer(p.images[0]);
+
+            document.getElementById('modal-thumbnails-container').innerHTML = p.images.map((url, i) => {
+                const isPdf = url.toLowerCase().endsWith('.pdf');
+                const src = isPdf ? 'https://cdn-icons-png.flaticon.com/512/337/337946.png' : url;
+                return `<img src="${src}" class="${i === 0 ? 'active' : ''}" onclick="updateThumb(this, '${url}')">`;
+            }).join('');
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function updateViewer(url) {
+            const v = document.getElementById('modal-media-viewer');
+            const isPdf = url.toLowerCase().endsWith('.pdf');
+            const pdfActions = document.getElementById('pdf-actions');
+            const viewPdfBtn = document.getElementById('view-pdf-btn');
+
+            if (isPdf) {
+                v.innerHTML = `<iframe src="${url}" width="100%" height="100%" style="border:none; background: #fff;"></iframe>`;
+                pdfActions.style.display = 'block';
+                viewPdfBtn.href = url;
+            } else {
+                v.innerHTML = `<img src="${url}" style="max-width:100%; max-height:100%; object-fit:contain; background: #000;">`;
+                pdfActions.style.display = 'none';
+            }
+        }
+
+        function updateThumb(el, url) {
+            updateViewer(url);
+            document.querySelectorAll('.modal-thumbnails img').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        window.onclick = e => { if (e.target.id === 'projectModal') closeProjectModal(); }
+        document.addEventListener('DOMContentLoaded', renderGrid);
+    </script>
+</body>
+
+</html>

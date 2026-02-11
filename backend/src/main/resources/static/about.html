@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - NaksheDekho</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .vision-mission {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+
+        .vision-text {
+            flex: 1;
+        }
+
+        .vision-image {
+            flex: 1;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .vision-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .about-stats {
+            background: var(--primary-blue);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            color: rgb(10, 9, 9);
+            margin-bottom: 0;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 991px) {
+            .values-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .value-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: var(--transition-smooth);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-cyan);
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .vision-mission {
+                flex-direction: column;
+                gap: 2rem;
+            }
+        }
+    </style>
+
+    <!-- Google Analytics -->
+    <script src="/js/google-analytics.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="NaksheDekho Logo">
+                <div class="logo-text-group">
+                    <div class="logo-brand">Nakshe<span>Dekho</span></div>
+                    <div class="logo-slogan">design.draft.deliver</div>
+                </div>
+            </a>
+
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link active">About</a></li>
+                <li class="nav-item"><a href="projects.html" class="nav-link">Projects</a></li>
+                <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
+                <li class="nav-item"><a href="packages.html" class="nav-link">Subscription</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+                <span id="auth-nav-placeholder" style="display: contents;"></span>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1 style="color: white;">Our Journey</h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem;">Crafting luxury spaces with passion and
+                precision since 2014.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="vision-mission">
+                <div class="vision-text">
+                    <h2 class="section-title" style="text-align: left;">Who We Are</h2>
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 2rem;">NaksheDekho.com is India’s first
+                        fully-digital construction design and drafting platform, providing
+                        architectural, interior, structural drawings, 3D visualizations, and BOQ estimates to
+                        professionals
+                        across India and abroad.</p>
+                    <p style="font-size: 1.1rem; line-height: 1.8;">Vision: To become the most trusted digital partner
+                        for architects, interior designers, and builders.</p>
+                    <p style="font-size: 1.1rem; line-height: 1.8;">Mission: Deliver speed, accuracy, and reliability in
+                        every project through a tech-enabled platform
+                        and expert team.
+                    </p>
+                </div>
+                <div class="vision-image">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800" alt="Design Studio">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="about-stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>1000+</h3>
+                    <p>Projects Completed</p>
+                </div>
+                <div class="stat-item">
+                    <h3>10+</h3>
+                    <p>Years of Experience</p>
+                </div>
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>Client Satisfaction</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Values -->
+    <section class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Core Values</h2>
+                <p class="section-subtitle"> The pillars that hold our design philosophy together.</p>
+            </div>
+            <div class="values-grid">
+                <div class="value-card"><span class="value-icon">💎</span>
+                    <h3>Integrity</h3>
+                    <p>Absolute transparency in pricing and materials.</p>
+                </div>
+                <div class="value-card"><span class="value-icon">🎨</span>
+                    <h3>Innovation</h3>
+                    <p>Unique results for every blank canvas.</p>
+                </div>
+                <div class="value-card"><span class="value-icon">🤝</span>
+                    <h3>Collaboration</h3>
+                    <p>Your vision is our guide throughout the process.</p>
+                </div>
+                <div class="value-card"><span class="value-icon">⭐</span>
+                    <h3>Excellence</h3>
+                    <p>Quality is non-negotiable in every detail.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Services Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Services</h2>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <span class="value-icon">📐</span>
+                    <h3>2D & 3D Architectural Drawings</h3>
+                    <p>Precise floor plans and stunning 3D models.</p>
+                </div>
+                <div class="value-card">
+                    <span class="value-icon">🏠</span>
+                    <h3>Interior Layouts & Visualizations</h3>
+                    <p>Creative space planning and photorealistic renders.</p>
+                </div>
+                <div class="value-card">
+                    <span class="value-icon">🏗️</span>
+                    <h3>Structural Drawings & Working Plans</h3>
+                    <p>Safe and reliable engineering designs for execution.</p>
+                </div>
+                <div class="value-card">
+                    <span class="value-icon">📋</span>
+                    <h3>BOQ & Estimation Services</h3>
+                    <p>Detailed cost analysis and material quantities.</p>
+                </div>
+                <div class="value-card">
+                    <span class="value-icon">⚖️</span>
+                    <h3>Legal & Sanction Drawings</h3>
+                    <p>Compliance and approval assistance for your projects.</p>
+                </div>
+                <div class="value-card">
+                    <span class="value-icon">📱</span>
+                    <h3>Digital Retainers & Subscription Plans</h3>
+                    <p>Continuous design support through flexible digital models.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Meet Our Visionaries</h2>
+                <p class="section-subtitle"> The expertise behind NaksheDekho's seamless design and drafting
+                    ecosystem.</p>
+            </div>
+
+            <div class="team-grid" id="visionaries-container">
+                <!-- Dynamic content will be loaded here -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 1rem; color: var(--text-muted);">Loading our team of experts...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>NaksheDekho</h3>
+                <p>We act as your dedicated backend team for drafting, 3D visualisation, and estimation—so you can
+                    focus
+                    on
+                    clients, design, and growth.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="about.html">About Us</a>
+                <a href="projects.html">Portfolio</a>
+                <a href="services.html">Services</a>
+                <a href="packages.html">Subscription</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: nakshedekho@gmail.com</p>
+                <p>Phone: +91 8962569111</p>
+                <p>Address: Indore, India</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <p>Instagram | Facebook | WhatsApp</p>
+                <a href="contact.html" class="btn btn-secondary mt-1">Get in Touch</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 NaksheDekho. All rights reserved. | Premium Interior Design Platform</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Load Visionaries
+        async function loadVisionaries() {
+            const container = document.getElementById('visionaries-container');
+            if (!container) return;
+
+            try {
+                const visionaries = await publicAPI.getVisionaries();
+
+                if (!visionaries || visionaries.length === 0) {
+                    container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">Our visionary team is being updated. Stay tuned!</div>';
+                    return;
+                }
+
+                const placeholder = 'https://ui-avatars.com/api/?background=random&color=fff&name=ND';
+
+                container.innerHTML = visionaries.map(v => `
+                    <div class="team-card">
+                        <div class="team-image-wrapper">
+                            <img src="${v.imageUrl || placeholder}" 
+                                 alt="${v.name}" 
+                                 class="team-image" 
+                                 onerror="this.onerror=null;this.src='${placeholder}';">
+                        </div>
+                        <div class="team-info">
+                            <span class="team-role">${v.role}</span>
+                            <h3 class="team-name">${v.name}</h3>
+                            <div class="team-experience">${v.experience}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load visionaries:', error);
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--error);">Unable to load team members at this moment.</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadVisionaries();
+        });
+    </script>
+</body>
+
+</html>

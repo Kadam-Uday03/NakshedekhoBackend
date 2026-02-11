@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Account - NaksheDekho</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .register-container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 3rem;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(13, 59, 102, 0.1);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e2e8f0;
+        }
+
+        .step.active {
+            background: #0ea5e9;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #64748b;
+            margin: 1.5rem 0;
+            width: 100%;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .divider:not(:empty)::before {
+            margin-right: .5em;
+        }
+
+        .divider:not(:empty)::after {
+            margin-left: .5em;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #0d3b66;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0a2d4d;
+        }
+
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <!-- Google Analytics -->
+    <script src="/js/google-analytics.js"></script>
+</head>
+
+<body style="background: #f8fafc;">
+    <div class="register-container fade-in">
+        <div class="step-indicator">
+            <div class="step"></div>
+            <div class="step"></div>
+            <div class="step active"></div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <img src="images/logo.png" alt="NaksheDekho Logo" style="height: 80px;">
+        </div>
+
+        <h2 style="text-align: center; color: #0d3b66; margin-bottom: 0.5rem;">One Last Step!</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">Valid Gmail is required to create an account.</p>
+
+        <div id="otp-section" style="display: none; text-align: center;">
+            <h3 style="color: #0d3b66; margin-bottom: 1rem;">Verify Email</h3>
+            <p style="margin-bottom: 1.5rem;">We've sent a 6-digit OTP to your email.</p>
+
+            <div class="form-group">
+                <input type="text" id="otp-input" class="form-input" placeholder="Enter 6-digit OTP"
+                    style="text-align: center; letter-spacing: 5px; font-size: 1.2rem; max-width: 200px; margin: 0 auto;">
+            </div>
+
+            <button id="verify-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Verify &
+                Login</button>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">
+                Didn't receive code? <a href="#" id="resend-link" style="color: #0ea5e9;">Resend</a>
+            </p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="fullName" class="form-input" required placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Gmail Address</label>
+                <input type="email" id="email" class="form-input" required placeholder="example@gmail.com"
+                    title="Please use a valid @gmail.com address" pattern="[a-zA-Z0-9._%+-]+@gmail\.com$">
+                <p id="email-error" class="error-message">Only @gmail.com addresses are allowed.</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="phone" class="form-input" required placeholder="Your contact number">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Create Password</label>
+                <div style="position: relative;">
+                    <input type="password" id="password" class="form-input" required placeholder="Min 8 characters"
+                        style="padding-right: 45px;">
+                    <span id="togglePassword"
+                        style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem; filter: grayscale(1); opacity: 0.6; transition: opacity 0.3s; user-select: none;">
+                        👁️
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Professional Category</label>
+                <select id="professionalCategory" class="form-input" required>
+                    <option value="" disabled selected>Select your category</option>
+                    <option value="Architect">Architect</option>
+                    <option value="Interior Designer">Interior Designer</option>
+                    <option value="Builder">Builder</option>
+                    <option value="Contractor">Contractor</option>
+                    <option value="Civil Engineer">Civil Engineer</option>
+                    <option value="Structural Engineer">Structural Engineer</option>
+                    <option value="Project Manager">Project Manager</option>
+                    <option value="QC Engineer">Quality Control (QC) Engineer</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn"
+                style="width: 100%; padding: 1.2rem; font-size: 1.1rem; margin-top: 1rem;">
+                Send OTP 🚀
+            </button>
+        </form>
+    </div>
+
+    <script src="js/api.js?v=2.0"></script>
+    <script>
+        let pendingEmail = '';
+
+        // Handle Gmail format validation UI
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
+
+        emailInput.addEventListener('input', () => {
+            if (emailInput.value && !emailInput.value.toLowerCase().endsWith('@gmail.com')) {
+                emailError.style.display = 'block';
+                emailInput.style.borderColor = '#f44336';
+            } else {
+                emailError.style.display = 'none';
+                emailInput.style.borderColor = '#e2e8f0';
+            }
+        });
+
+        // Password Toggle Logic
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.style.opacity = type === 'password' ? '0.6' : '1';
+            this.style.filter = type === 'password' ? 'grayscale(1)' : 'grayscale(0)';
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email.toLowerCase().endsWith('@gmail.com')) {
+                showNotification('Registration blocked: Only @gmail.com is allowed.', 'error');
+                return;
+            }
+
+            const userData = {
+                fullName: document.getElementById('fullName').value,
+                email: email,
+                phone: document.getElementById('phone').value,
+                password: password,
+                professionalCategory: document.getElementById('professionalCategory').value,
+                role: 'CUSTOMER'
+            };
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending OTP...';
+
+            try {
+                console.log('Registering user:', email);
+                // 1. Request Registration (Backend now saves user and sends OTP in one call)
+                const response = await authAPI.register(userData);
+
+                console.log('Registration response:', response);
+                showNotification(response.message || 'OTP sent to your email!', 'success');
+                pendingEmail = email;
+
+                // Switch UI
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('otp-section').style.display = 'block';
+
+            } catch (error) {
+                console.error('Registration failed:', error);
+                showNotification(error.message || 'Registration failed.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send OTP 🚀';
+            }
+        });
+
+        // Handle OTP Verification
+        document.getElementById('verify-btn').addEventListener('click', async () => {
+            const otp = document.getElementById('otp-input').value;
+            const verifyBtn = document.getElementById('verify-btn');
+
+            if (!otp || otp.length < 6) {
+                showNotification('Please enter a valid 6-digit OTP', 'error');
+                return;
+            }
+
+            try {
+                verifyBtn.disabled = true;
+                verifyBtn.textContent = 'Verifying...';
+
+                const authResponse = await authAPI.verify(pendingEmail, otp);
+                showNotification('Email verified! Redirecting...', 'success');
+
+                // Finalize purchase if there was a plan selected
+                const plan = localStorage.getItem('selectedPlan');
+                if (plan) {
+                    try {
+                        // Attempt to purchase package
+                        const planData = JSON.parse(plan);
+                        const paidAmount = localStorage.getItem('paidAmount') || 0;
+                        const txnId = localStorage.getItem('razorpay_payment_id');
+
+                        // We use customerAPI from api.js
+                        if (typeof customerAPI !== 'undefined') {
+                            await customerAPI.purchasePackage({
+                                packageId: planData.id,
+                                projectName: `${planData.name} Interior Project`,
+                                requirements: 'New Registration Purchase',
+                                advanceAmount: parseFloat(paidAmount),
+                                transactionId: txnId
+                            });
+                        }
+                    } catch (pError) {
+                        console.error('Project creation failed:', pError);
+                    }
+                }
+
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'customer/dashboard.html';
+                }, 1000);
+            } catch (error) {
+                showNotification(error.message || 'Invalid OTP', 'error');
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = 'Verify & Login';
+            }
+        });
+
+        document.getElementById('resend-link').onclick = async (e) => {
+            e.preventDefault();
+            try {
+                showNotification('Resending OTP...', 'info');
+                await authAPI.sendOTP(pendingEmail);
+                showNotification('OTP resent successfully!', 'success');
+            } catch (error) {
+                showNotification(error.message || 'Failed to resend OTP', 'error');
+            }
+        };
+    </script>
+</body>
+
+</html>

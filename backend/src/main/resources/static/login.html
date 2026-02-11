@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to NaksheDekho - Interior Design Platform">
+    <title>Login - NaksheDekho</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan));
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--dark-grey);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .back-link a {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="images/logo.png" alt="NaksheDekho Logo" style="height: 80px; margin-bottom: 1.5rem;">
+                <h1 class="text-primary">Nakshe<span class="text-accent">Dekho</span></h1>
+                <p>Welcome back! Please login to continue</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form">
+                <form onsubmit="handleLoginForm(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="login-email">Email</label>
+                        <input type="email" id="login-email" name="email" class="form-input" required
+                            placeholder="your@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="login-password">Password</label>
+                        <div style="position: relative;">
+                            <input type="password" id="login-password" name="password" class="form-input" required
+                                placeholder="Enter your password" style="padding-right: 45px;">
+                            <span id="togglePassword"
+                                style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem; filter: grayscale(1); opacity: 0.6; transition: opacity 0.3s; user-select: none;">
+                                👁️
+                            </span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Login</button>
+                </form>
+            </div>
+
+            <div class="back-link">
+                <p style="margin-bottom: 1rem; color: #1e293b;">Don't have an account? <a href="register-customer.html"
+                        style="color: var(--accent-cyan); font-weight: 600;">Create New Account</a></p>
+                <a href="index.html" style="color: var(--accent-cyan);">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (isAuthenticated()) {
+            redirectToDashboard();
+        }
+
+        // Password Toggle Logic
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('login-password');
+
+        if (togglePassword && passwordField) {
+            togglePassword.addEventListener('click', function () {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                this.style.opacity = type === 'password' ? '0.6' : '1';
+                this.style.filter = type === 'password' ? 'grayscale(1)' : 'grayscale(0)';
+            });
+        }
+    </script>
+</body>
+
+</html>

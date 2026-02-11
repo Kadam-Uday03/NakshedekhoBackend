@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="NaksheDekho - Premium Interior Design Services | Transform your space with luxury interior design">
+    <title>NaksheDekho - Premium Interior Design Services</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="NaksheDekho Logo">
+                <div class="logo-text-group">
+                    <div class="logo-brand">Nakshe<span>Dekho</span></div>
+                    <div class="logo-slogan">design.draft.deliver</div>
+                </div>
+            </a>
+
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link active">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="projects.html" class="nav-link">Projects</a></li>
+                <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
+                <li class="nav-item"><a href="packages.html" class="nav-link">Subscription</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+                <span id="auth-nav-placeholder" style="display: contents;"></span>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Upscale your<br>Construction business with Nakshedekho.com</h1>
+            <div class="hero-cta">
+                <a href="packages.html" class="btn btn-primary">View Subscription Plans</a>
+                <a href="contact.html" class="btn btn-outline">Enquire Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Estimator Section -->
+    <section class="quick-estimator">
+        <div class="estimator-container">
+            <div class="estimator-card">
+                <div class="estimator-header">
+                    <h2>Build Your Dream Home Easily</h2>
+                    <p>Select a service and enter dimensions to get a quick cost estimate</p>
+                </div>
+
+                <div class="estimator-tabs">
+                    <button class="tab-btn active" onclick="switchTab(this, '2D Layout Plan')">
+                        <span class="tab-icon">📐</span>
+                        <span>2D Layout Plan</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab(this, '3D Front Elevation')">
+                        <span class="tab-icon">🏠</span>
+                        <span>3D Front Elevation</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab(this, 'Structural Drawings')">
+                        <span class="tab-icon">🏗️</span>
+                        <span>Structural Drawings</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab(this, 'Presentation Plan')">
+                        <span class="tab-icon">📋</span>
+                        <span>Presentation Plan</span>
+                    </button>
+                    <button class="tab-btn" onclick="window.location.href='services.html'">
+                        <span class="tab-icon">➕</span>
+                        <span>More</span>
+                    </button>
+                </div>
+
+                <div class="estimator-form-wrapper">
+
+                    <form class="estimator-form" onsubmit="event.preventDefault(); calculatePrice();">
+                        <div class="input-box">
+                            <label>Length (ft)</label>
+                            <input type="number" id="calc-depth" placeholder="0" required oninput="updateArea()">
+                        </div>
+                        <div class="input-box">
+                            <label>Width (ft)</label>
+                            <input type="number" id="calc-width" placeholder="0" required oninput="updateArea()">
+                        </div>
+                        <div class="input-box">
+                            <label>Floor</label>
+                            <select id="calc-floor"
+                                onchange="document.getElementById('estimator-result').style.display = 'none';">
+                                <option value="1">Ground Floor</option>
+                                <option value="2">G + 1</option>
+                                <option value="3">G + 2</option>
+                                <option value="4">G + 3</option>
+                            </select>
+                        </div>
+                        <div class="input-box">
+                            <label>Elevation Design</label>
+                            <select id="calc-elevation"
+                                onchange="document.getElementById('estimator-result').style.display = 'none';">
+                                <option value="none">None (Planning Only)</option>
+                                <option value="front">Front Elevation</option>
+                                <option value="side">Side Elevation</option>
+                                <option value="both">Both (Front & Side)</option>
+                            </select>
+                        </div>
+                        <div class="input-box">
+                            <label>Building Area (sq.ft)</label>
+                            <input type="number" id="calc-area" placeholder="Auto-calculated" readonly>
+                        </div>
+                        <div class="input-box">
+                            <label>Facing</label>
+                            <select id="calc-north">
+                                <option value="North">North</option>
+                                <option value="South">South</option>
+                                <option value="East">East</option>
+                                <option value="West">West</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="calc-btn">Calculate Price</button>
+                    </form>
+
+                    <!-- Result Display -->
+                    <div id="estimator-result" class="estimator-result" style="display: none;">
+                        <div class="result-content">
+                            <div class="result-label" id="result-label">Estimated Project Cost</div>
+                            <div class="result-value" id="result-price">₹ 0</div>
+
+                            <!-- Subscription Discount Info -->
+                            <div id="subscription-info"
+                                style="margin: 1rem 0; padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.1); display: none;">
+                                <p id="subscription-msg" style="margin: 0; font-size: 0.95rem; font-weight: 500;"></p>
+                            </div>
+
+                            <p class="result-note">Note: This is a tentative estimate based on standard rates. Final
+                                price may vary based on materials and complexity.</p>
+                            <div class="result-actions">
+                                <button id="create-project-btn" class="btn btn-secondary"
+                                    onclick="createProject()">Create Project with this Estimate</button>
+                                <button class="btn btn-outline" onclick="resetEstimator()"
+                                    style="color: white; border-color: rgba(255,255,255,0.3);">Recalculate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="experience-section">
+        <div class="experience-container">
+            <div class="exp-left">
+                <div class="exp-icon-box">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19,15L13,15L13,21L11,21L11,15L5,15L5,13L11,13L11,7L13,7L13,13L19,13L19,15Z" />
+                        <path d="M22,19L2,19L2,21L22,21L22,19Z" />
+                        <path d="M2.5,4L21.5,4L21.5,6L2.5,6L2.5,4Z" />
+                        <path d="M7,6L7,13L9,13L9,6L7,6Z" />
+                        <path d="M15,6L15,13L17,13L17,6L15,6Z" />
+                    </svg>
+                </div>
+                <div class="exp-years">10+</div>
+                <div class="exp-label">Years<br>Experience</div>
+            </div>
+            <div class="exp-right">
+                <div class="exp-divider"></div>
+                <h2 class="exp-heading">Meet the most reliable and affordable Construction Design and Drawings provider
+                </h2>
+                <div class="exp-features">
+                    <div class="feature-item">
+                        <div class="feature-icon-img">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M19,3H5C3.89,3 3,3.89 3,5V19C3,20.1 3.89,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M7,10H17V12H7V10M7,14H17V16H7V14M7,6H17V8H7V6Z" />
+                            </svg>
+                        </div>
+                        <span class="feature-text">Project Planning</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-img">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
+                            </svg>
+                        </div>
+                        <span class="feature-text">Cost Estimation</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-img">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M15,11V5L12,2L9,5V7H3V21H21V11H15M7,19H5V17H7V19M7,15H5V13H7V15M7,11H5V9H7V11M13,19H11V17H13V19M13,15H11V13H13V15M13,11H11V9H13V11M13,7H11V5H13V7M19,19H17V17H19V19M19,15H17V13H19V15" />
+                            </svg>
+                        </div>
+                        <span class="feature-text">Commercial Design</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-img">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M19,6.5H5V5H19V6.5M19,15.5V17H5V15.5H19M19,10.5H5V12H19V10.5M5,2H19C20.1,2 21,2.9 21,4V20C21,21.1 20.1,22 19,22H5C3.9,22 3,21.1 3,20V4C3,2.9 3.9,2H5Z" />
+                            </svg>
+                        </div>
+                        <span class="feature-text">Residential Design</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose NaksheDekho</h2>
+                <p class="section-subtitle">Fully digital on-demand design, drawings & estimation Fast turnaround
+                    , high accuracy, affordable pricing Dedicated support, unlimited revisions <br>(for
+                    premium), scalable for firms</p>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title">🎨 Creative Excellence</h3>
+                        <p class="card-text">Our award-winning designers craft unique spaces that blend aesthetics with
+                            functionality, tailored to your lifestyle.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title">📐 Precision Planning</h3>
+                        <p class="card-text">From 2D layouts to photorealistic 3D renders, we ensure every detail is
+                            perfect before execution begins.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title">⚡ Turnkey Solutions</h3>
+                        <p class="card-text">Complete project management from design to installation. We handle
+                            everything so you don't have to.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title">💎 Premium Quality</h3>
+                        <p class="card-text">We source the finest materials and work with skilled craftsmen to deliver
+                            luxury that lasts.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title">📊 Transparent Process</h3>
+                        <p class="card-text">Track your project progress in real-time through our customer dashboard.
+                            Complete visibility, zero surprises.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title">🕐 On-Time Delivery</h3>
+                        <p class="card-text">We respect your time. Our structured workflow ensures projects are
+                            completed within the promised timeline.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Overview -->
+    <section class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Services</h2>
+            </div>
+
+            <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">📐</div>
+                        <h3 class="card-title">2D & 3D Architectural Drawings</h3>
+                        <p class="card-text">Comprehensive floor plans, elevations, and detailed architectural models
+                            designed for precision and aesthetics.</p>
+                        <a href="services.html" class="btn btn-secondary mt-1">Explore Details</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">🏠</div>
+                        <h3 class="card-title">Interior Layouts & Visualizations</h3>
+                        <p class="card-text">Expert space planning and photorealistic 3D interior renders that bring
+                            your dream space to life before execution.</p>
+                        <a href="services.html" class="btn btn-secondary mt-1">Explore Details</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">🏗️</div>
+                        <h3 class="card-title">Structural Drawings & Working Plans</h3>
+                        <p class="card-text">Detailed structural engineering drawings and execution plans to ensure the
+                            strength and safety of your building.</p>
+                        <a href="services.html" class="btn btn-secondary mt-1">Explore Details</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">📋</div>
+                        <h3 class="card-title">BOQ & Estimation Services</h3>
+                        <p class="card-text">Accurate bill of quantities and project cost estimation to help you plan
+                            your budget with zero surprises.</p>
+                        <a href="services.html" class="btn btn-secondary mt-1">Explore Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- CTA Subscription Section -->
+    <section class="cta-subscription">
+        <div class="container">
+            <h2 class="section-title">Scale Your Design Firm with NaksheDekho</h2>
+            <p class="section-subtitle">
+                We act as your dedicated backend team for drafting, 3D visualisation, and estimation—so you can focus on
+                clients, design, and growth. Join our network and save up to 60% on all design services.
+            </p>
+
+            <div class="subscription-benefits">
+                <div class="benefit-item">
+                    <span class="benefit-icon">✅</span>
+                    <span class="benefit-text">On-demand Drafting Team</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">🚀</span>
+                    <span class="benefit-text">Priority 24-48h Turnaround</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">💎</span>
+                    <span class="benefit-text">Exclusive Service Discount</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">🔄</span>
+                    <span class="benefit-text">Unlimited Revision Support</span>
+                </div>
+            </div>
+
+            <div class="cta-btn-group">
+                <a href="packages.html" class="btn btn-primary"
+                    style="font-size: 1.2rem; padding: 1.2rem 3.5rem; box-shadow: 0 10px 25px rgba(0, 181, 226, 0.4);">
+                    Explore Subscription Plans
+                </a>
+                <a href="contact.html" class="btn btn-outline"
+                    style="color: white; border-color: white; font-size: 1.1rem; padding: 1.1rem 2.5rem;">
+                    Speak to Expert
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>NaksheDekho</h3>
+                <p>We act as your dedicated backend team for drafting, 3D visualisation, and estimation—so you can focus
+                    on
+                    clients, design, and growth.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="about.html">About Us</a>
+                <a href="projects.html">Portfolio</a>
+                <a href="services.html">Services</a>
+                <a href="packages.html">Subscription</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: nakshedekho@gmail.com</p>
+                <p>Phone: +91 8962569111</p>
+                <p>Address: Indore, India</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <p>Instagram | Facebook | WhatsApp</p>
+                <a href="contact.html" class="btn btn-secondary mt-1">Get in Touch</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 NaksheDekho. All rights reserved. | Premium Interior Design Platform</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (navbar) {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+        });
+
+
+
+        // Quick Estimator Logic
+        let selectedService = '2D Layout Plan';
+        let currentEstimatedPrice = 0;
+        let userProfile = null; // Store user profile for subscription discount
+
+        // Load user profile if logged in
+        async function loadUserProfile() {
+            if (isAuthenticated() && hasRole('CUSTOMER')) {
+                try {
+                    console.log('🔄 Loading user profile for calculator...');
+                    userProfile = await customerAPI.getProfile();
+                    console.log('✅ Profile loaded:', {
+                        hasSubscription: !!userProfile.activeSubscription,
+                        name: userProfile.activeSubscription?.name,
+                        discount: userProfile.activeSubscription?.serviceDiscountPercentage + '%'
+                    });
+                } catch (error) {
+                    console.error('❌ Failed to load profile:', error);
+                    userProfile = null;
+                }
+            }
+        }
+
+        function switchTab(btn, service) {
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            selectedService = service;
+
+            // Hide/Show result
+            document.getElementById('estimator-result').style.display = 'none';
+
+            // Auto-select Elevation based on tab and show/hide elevation field
+            const elevationSelect = document.getElementById('calc-elevation');
+            const elevationField = elevationSelect.closest('.input-box');
+
+            if (service === '3D Front Elevation') {
+                // Show elevation field for 3D Front Elevation
+                if (elevationField) elevationField.style.display = 'block';
+                if (elevationSelect.value === 'none') {
+                    elevationSelect.value = 'front';
+                }
+            } else {
+                // Hide elevation field for other services
+                if (elevationField) elevationField.style.display = 'none';
+                elevationSelect.value = 'none'; // Reset to none
+            }
+        }
+
+        function updateArea() {
+            const depth = document.getElementById('calc-depth').value || 0;
+            const width = document.getElementById('calc-width').value || 0;
+            const area = depth * width;
+            document.getElementById('calc-area').value = area > 0 ? area : '';
+            // Hide result if dimensions change
+            document.getElementById('estimator-result').style.display = 'none';
+        }
+
+
+        async function calculatePrice() {
+            // Ensure user profile is loaded for accurate discount
+            if (isAuthenticated() && hasRole('CUSTOMER') && !userProfile) {
+                await loadUserProfile();
+            }
+
+            const area = parseFloat(document.getElementById('calc-area').value);
+            const floor = parseInt(document.getElementById('calc-floor').value);
+
+            if (!area || area <= 0) {
+                alert('Please enter valid dimensions');
+                return;
+            }
+
+            let baseCost = 0;
+            const effectiveArea = area * floor;
+            const elevationVal = document.getElementById('calc-elevation').value;
+
+            // 1. Calculate Core Service Price
+            if (selectedService === '2D Layout Plan') {
+                baseCost = (effectiveArea > 2000) ? effectiveArea * 1 : 1999;
+            } else if (selectedService === '3D Front Elevation') {
+                baseCost = (effectiveArea > 2000) ? effectiveArea * 3 : 5000;
+                // If they picked None in elevation for 3D tab, force it or handle it
+                // We'll treat the 3D tab as a package that *at least* includes front if none is selected
+            } else if (selectedService === 'Structural Drawings') {
+                baseCost = (effectiveArea > 2000) ? effectiveArea * 3 : 5000;
+            } else {
+                baseCost = effectiveArea * 10;
+            }
+
+            // 2. Add Elevation Cost if selected (unless it's the primary service already)
+            // Note: If 3D Elevation is the core service, it already covers 'front'. 
+            // We only add EXTRA if 'side' or 'both' is selected in the elevation dropdown.
+
+            if (elevationVal !== 'none') {
+                let elevationRate = (effectiveArea > 2000) ? effectiveArea * 3 : 5000;
+
+                if (selectedService === '3D Front Elevation') {
+                    // Already included 'front' in baseCost.
+                    if (elevationVal === 'side') {
+                        // User specifically wants Side instead? Or maybe add side cost.
+                        // Assuming they want Front & Side if they chose Side here.
+                        baseCost += elevationRate;
+                    } else if (elevationVal === 'both') {
+                        baseCost += elevationRate;
+                    }
+                } else {
+                    // Additive Elevation for other services (2D, etc.)
+                    if (elevationVal === 'front' || elevationVal === 'side') {
+                        baseCost += elevationRate;
+                    } else if (elevationVal === 'both') {
+                        baseCost += (elevationRate * 2);
+                    }
+                }
+            }
+
+            let finalCost = baseCost;
+
+            // Check for subscription discount using userProfile (loaded on page load)
+            const resultDiv = document.getElementById('estimator-result');
+            const priceSpan = document.getElementById('result-price');
+            const subInfo = document.getElementById('subscription-info');
+            const subMsg = document.getElementById('subscription-msg');
+            const resultLabel = document.getElementById('result-label');
+
+            // Use userProfile for accurate subscription information
+            if (userProfile && userProfile.activeSubscription) {
+                const endDate = new Date(userProfile.subscriptionEndDate);
+                const isActive = endDate > new Date();
+
+                if (isActive) {
+                    const discount = userProfile.activeSubscription.serviceDiscountPercentage || 0;
+                    const planName = userProfile.activeSubscription.packageTier || 'BASIC';
+                    if (discount > 0) {
+                        const discountAmount = (baseCost * discount) / 100;
+                        finalCost = baseCost - discountAmount;
+
+                        subInfo.style.display = 'block';
+                        subInfo.style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(21, 128, 61, 0.35) 100%)';
+                        subInfo.style.border = '1px solid rgba(34, 197, 94, 0.5)';
+                        subInfo.style.boxShadow = '0 0 20px rgba(34, 197, 94, 0.2)';
+                        subMsg.style.color = '#ffffff';
+                        subMsg.style.padding = '10px';
+                        subMsg.innerHTML = `<span style="font-size: 1.2rem; margin-right: 8px;">✨</span> <strong>Exclusive Discount:</strong> You saved <span style="color: #4ade80; font-size: 1.2rem; font-weight: 800;">${formatCurrency(discountAmount)}</span> (${discount}% off) with your <span style="text-transform: uppercase; color: #4ade80; font-weight: 700;">${planName}</span> plan!`;
+                        resultLabel.innerText = "Special Discounted Price";
+                        resultLabel.style.color = "#4ade80";
+                        resultLabel.style.fontWeight = "800";
+                    } else {
+                        subInfo.style.display = 'none';
+                        resultLabel.innerText = "Estimated Project Cost";
+                        resultLabel.style.color = "rgba(255,255,255,0.7)";
+                    }
+                } else {
+                    // Subscription expired
+                    subInfo.style.display = 'none';
+                    resultLabel.innerText = "Estimated Project Cost";
+                    resultLabel.style.color = "rgba(255,255,255,0.7)";
+                }
+            } else {
+                // Not logged in or no subscription - encourage subscription
+
+                subInfo.style.display = 'block';
+                subInfo.style.background = 'linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(3, 105, 161, 0.25) 100%)';
+                subInfo.style.border = '1px solid rgba(14, 165, 233, 0.4)';
+                subInfo.style.boxShadow = '0 0 15px rgba(14, 165, 233, 0.1)';
+                subMsg.style.color = '#ffffff';
+                subMsg.style.padding = '10px';
+                subMsg.innerHTML = `<span style="font-size: 1.2rem; margin-right: 8px;">💡</span> <strong>Pro Tip:</strong> Subscribe to our <a href="packages.html" style="color: #38bdf8; text-decoration: underline; font-weight: 700;">Subscription Plans</a> and get <span style="color: #38bdf8; font-weight: 800;">exclusive discounts</span> on all services! Different plans offer different benefits - choose what suits you best.`;
+                resultLabel.innerText = "Estimated Project Cost";
+                resultLabel.style.color = "rgba(255,255,255,0.7)";
+            }
+
+            // Display Result
+            priceSpan.innerText = `${finalCost.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })}`;
+            currentEstimatedPrice = finalCost;
+            resultDiv.style.display = 'block';
+
+            // Update the link to include parameters
+            const createProjectBtn = document.getElementById('create-project-btn');
+            const params = new URLSearchParams({
+                action: 'create_project',
+                service: selectedService,
+                area: effectiveArea,
+                floors: floor,
+                estimatedCost: finalCost,
+                elevation: document.getElementById('calc-elevation').value
+            });
+            createProjectBtn.dataset.url = `customer/dashboard.html?${params.toString()}`;
+
+            // Smooth scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        async function createProject() {
+            if (!authAPI.isAuthenticated()) {
+                showLoginModal();
+                return;
+            }
+
+            if (currentEstimatedPrice <= 0) {
+                showNotification('Please calculate the estimated price first.', 'info');
+                return;
+            }
+
+            try {
+                // Show loading state or notification
+                showNotification('Creating project...', 'success');
+                const btn = document.getElementById('create-project-btn');
+                if (btn) btn.disabled = true;
+
+                // 1. Fetch packages to find a match
+                // 1. Fetch packages to find a match
+                const packages = await publicAPI.getPackages();
+
+                // Filter only SERVICE packages (exclude subscriptions)
+                const servicePackages = packages.filter(p => !p.isSubscription);
+
+                if (servicePackages.length === 0) {
+                    throw new Error('No service packages available to link project.');
+                }
+
+                let match = null;
+                const searchName = selectedService.toLowerCase();
+
+                // 1. Try exact/partial match
+                match = servicePackages.find(p => p.name.toLowerCase().includes(searchName));
+
+                // 2. Try keyword matching if no direct match
+                if (!match) {
+                    if (searchName.includes('2d')) match = servicePackages.find(p => p.name.toLowerCase().includes('2d') || p.name.toLowerCase().includes('drawing'));
+                    else if (searchName.includes('3d')) match = servicePackages.find(p => p.name.toLowerCase().includes('3d') || p.name.toLowerCase().includes('elevation') || p.name.toLowerCase().includes('visual'));
+                    else if (searchName.includes('structural')) match = servicePackages.find(p => p.name.toLowerCase().includes('structural'));
+                }
+
+                // 3. Fallback to the first available service package
+                if (!match) {
+                    match = servicePackages[0];
+                    console.log('No specific package match found, using fallback:', match.name);
+                }
+
+                const pkgId = match.id;
+
+                // 2. Create Project
+                await customerAPI.createProject(
+                    pkgId,
+                    `${selectedService}`, // Set Project Name as the Service Name directly
+                    `Service Type: ${selectedService}\nArea: ${document.getElementById('calc-area').value} sqft\nFloor: ${document.getElementById('calc-floor').value}\nElevation Opt: ${document.getElementById('calc-elevation').value}\nFacing: ${document.getElementById('calc-north').value}\n\nGenerated via Quick Estimator`,
+                    currentEstimatedPrice
+                );
+
+                showNotification('Project created successfully! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'customer/dashboard.html?action=created';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Failed to create project:', error);
+                showNotification(error.message || 'Failed to create project', 'error');
+                const btn = document.getElementById('create-project-btn');
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        function resetEstimator() {
+            document.querySelector('.estimator-form').reset();
+            document.getElementById('estimator-result').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile(); // Load user profile for calculator discount
+
+            // Hide elevation field by default (since default tab is 2D Layout Plan)
+            const elevationSelect = document.getElementById('calc-elevation');
+            const elevationField = elevationSelect?.closest('.input-box');
+            if (elevationField) elevationField.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>
