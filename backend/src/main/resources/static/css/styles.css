@@ -2186,6 +2186,50 @@ a {
     margin-bottom: 2rem;
 }
 
+.modal-actions-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.modal-actions-wrapper .btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 1.75rem;
+    border-radius: 12px;
+    font-weight: 700;
+    min-height: 54px;
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+    width: 100%;
+    margin: 0 !important;
+}
+
+#modal-project-meta {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+#modal-project-meta .btn {
+    flex: 1;
+    white-space: nowrap;
+}
+
+@media (max-width: 850px) {
+    #modal-project-meta {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .modal-actions-wrapper .btn {
+        width: 100% !important;
+    }
+}
+
 /* ===== RESPONSIVE OVERHAUL ===== */
 
 /* High-res screens */
@@ -2338,21 +2382,86 @@ a {
 
 /* Specific Section Adjustments */
 @media (max-width: 768px) {
+    .estimator-container {
+        padding: 0 1rem;
+    }
+
+    .estimator-header {
+        padding: 1.5rem 1rem;
+    }
+
+    .estimator-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .estimator-header p {
+        font-size: 1rem;
+    }
+
     .estimator-tabs {
         flex-wrap: nowrap;
         overflow-x: auto;
         justify-content: flex-start;
-        padding-bottom: 1rem;
+        padding-bottom: 0px;
         -webkit-overflow-scrolling: touch;
+        gap: 0;
+        scrollbar-width: none;
+    }
+
+    .estimator-tabs::-webkit-scrollbar {
+        display: none;
     }
 
     .tab-btn {
-        min-width: 120px;
+        flex: 0 0 140px;
+        min-width: 140px;
+        padding: 1.25rem 0.5rem;
         flex-shrink: 0;
+    }
+
+    .tab-btn .tab-icon {
+        font-size: 1.6rem;
+    }
+
+    .tab-btn span {
+        font-size: 0.85rem;
+    }
+
+    .estimator-form-wrapper {
+        padding: 2rem 1.5rem;
     }
 
     .estimator-form {
         grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .result-value {
+        font-size: 2.8rem;
+    }
+
+    .result-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .result-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .cta-btn-group {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .cta-btn-group .btn {
+        width: 100% !important;
+        padding: 1rem 1.5rem !important;
+        font-size: 1rem !important;
     }
 
     .benefit-item {

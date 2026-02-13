@@ -342,23 +342,34 @@
                     return;
                 }
 
-                const placeholder = 'https://ui-avatars.com/api/?background=random&color=fff&name=ND';
+                container.innerHTML = visionaries.map(v => {
+                    // Use a more professional looking placeholder if the image is missing from the server
+                    const nameForPlaceholder = encodeURIComponent(v.name);
+                    const placeholder = `https://api.dicebear.com/7.x/initials/svg?seed=${nameForPlaceholder}&backgroundColor=0ea5e9&fontSize=40&fontWeight=700`;
 
-                container.innerHTML = visionaries.map(v => `
-                    <div class="team-card">
-                        <div class="team-image-wrapper">
-                            <img src="${v.imageUrl || placeholder}" 
-                                 alt="${v.name}" 
-                                 class="team-image" 
-                                 onerror="this.onerror=null;this.src='${placeholder}';">
+                    // Fix: Use a safer way to handle URLs. Only encode spaces to %20.
+                    // Doing a full encodeURIComponent on the whole path was turning '/' into '%2F'
+                    let imageUrl = placeholder;
+                    if (v.imageUrl) {
+                        imageUrl = v.imageUrl.replace(/ /g, '%20');
+                    }
+
+                    return `
+                        <div class="team-card">
+                            <div class="team-image-wrapper">
+                                <img src="${imageUrl}" 
+                                     alt="${v.name}" 
+                                     class="team-image" 
+                                     onerror="if(this.src !== '${placeholder}') { this.src='${placeholder}'; this.onerror=null; }">
+                            </div>
+                            <div class="team-info">
+                                <span class="team-role">${v.role}</span>
+                                <h3 class="team-name">${v.name}</h3>
+                                <div class="team-experience">${v.experience}</div>
+                            </div>
                         </div>
-                        <div class="team-info">
-                            <span class="team-role">${v.role}</span>
-                            <h3 class="team-name">${v.name}</h3>
-                            <div class="team-experience">${v.experience}</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             } catch (error) {
                 console.error('Failed to load visionaries:', error);
                 container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--error);">Unable to load team members at this moment.</div>';

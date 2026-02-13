@@ -521,12 +521,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Close menu when clicking a link
-        navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
+        // Use event delegation for closing menu on link clicks
+        navMenu.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (link) {
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
-            });
+            }
         });
     }
 });

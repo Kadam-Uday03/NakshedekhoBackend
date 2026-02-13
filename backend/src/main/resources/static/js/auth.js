@@ -74,22 +74,6 @@ function updateNavigation() {
 
     if (!navMenu) return;
 
-    // Handle mobile menu toggle
-    const hamburger = document.getElementById('hamburger');
-    if (hamburger) {
-        hamburger.onclick = () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        };
-    }
-
-    // Close menu when clicking links
-    navMenu.querySelectorAll('.nav-link').forEach(link => {
-        link.onclick = () => {
-            if (hamburger) hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        };
-    });
 
     let authHTML = '';
     if (user) {
