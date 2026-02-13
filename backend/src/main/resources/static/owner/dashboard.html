@@ -41,7 +41,7 @@
             padding: 2rem 1.25rem;
             display: flex;
             flex-direction: column;
-            z-index: 1000;
+            z-index: 2000;
             box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -111,7 +111,7 @@
             bottom: 0;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
-            z-index: 999;
+            z-index: 1999;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -149,7 +149,7 @@
                 left: 0;
             }
 
-            .sidebar.active~.menu-overlay {
+            .menu-overlay.active {
                 display: block;
                 opacity: 1;
             }
@@ -1018,6 +1018,11 @@
             if (tabId === 'enquiries') loadEnquiries();
             if (tabId === 'visionaries') loadVisionaries();
             if (tabId === 'payments') loadPayments();
+
+            // Auto-close sidebar on mobile after choosing a tab
+            if (window.innerWidth <= 1024) {
+                toggleMobileMenu(true);
+            }
         }
 
         async function loadManagers() {
@@ -1656,18 +1661,29 @@
         const menuOverlay = document.getElementById('menu-overlay');
 
         function toggleMobileMenu(forceClose = false) {
+            if (!sidebar || !menuOverlay) return;
+
             if (forceClose) {
                 sidebar.classList.remove('active');
-                menuToggle.innerHTML = '☰';
+                menuOverlay.classList.remove('active');
+                if (menuToggle) menuToggle.innerHTML = '☰';
                 return;
             }
+
             const isActive = sidebar.classList.toggle('active');
-            menuToggle.innerHTML = isActive ? '✕' : '☰';
+            menuOverlay.classList.toggle('active');
+
+            if (menuToggle) menuToggle.innerHTML = isActive ? '✕' : '☰';
         }
 
         if (menuToggle) {
-            menuToggle.addEventListener('click', () => toggleMobileMenu());
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleMobileMenu();
+            });
         }
+
+
 
         if (menuOverlay) {
             menuOverlay.addEventListener('click', () => toggleMobileMenu(true));
@@ -1710,25 +1726,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             loadDashboardData();
-
-            // Sidebar Toggle for Mobile
-            const menuToggle = document.querySelector('.menu-toggle');
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.querySelector('.menu-overlay');
-
-            if (menuToggle && sidebar && overlay) {
-                menuToggle.addEventListener('click', () => {
-                    sidebar.classList.toggle('active');
-                    overlay.classList.toggle('active');
-                    menuToggle.innerHTML = sidebar.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-                });
-
-                overlay.addEventListener('click', () => {
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                });
-            }
 
             // Setup User Info in Top Bar
             const user = getCurrentUser();
