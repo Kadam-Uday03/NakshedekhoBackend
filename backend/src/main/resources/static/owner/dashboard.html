@@ -1380,9 +1380,7 @@
 
             // Fix labels for packages
             const nameLabel = document.querySelector("label[for='p-name']");
-            const imageLabel = document.querySelector("label[for='p-image']");
             if (nameLabel) nameLabel.textContent = 'Subscription Name';
-            if (imageLabel) imageLabel.textContent = 'Subscription Image URL (Optional)';
 
             document.getElementById('pkg-modal').style.display = 'flex';
         }
@@ -1400,9 +1398,7 @@
 
             // Reset labels for services
             const nameLabel = document.querySelector("label[for='p-name']");
-            const imageLabel = document.querySelector("label[for='p-image']");
             if (nameLabel) nameLabel.textContent = 'Service Name';
-            if (imageLabel) imageLabel.textContent = 'Service Image URL (Optional)';
 
             document.getElementById('pkg-modal').style.display = 'flex';
         }
@@ -1411,13 +1407,19 @@
             document.getElementById('edit-id').value = p.id;
 
             // Common fields for everything
-            document.getElementById('p-discount').value = p.discountPercentage || '';
-            document.getElementById('p-offer-desc').value = p.offerDescription || '';
-            if (p.offerValidUntil) {
-                const date = new Date(p.offerValidUntil);
-                document.getElementById('p-offer-valid').value = date.toISOString().split('T')[0];
-            } else {
-                document.getElementById('p-offer-valid').value = '';
+            const discountEl = document.getElementById('p-discount');
+            const offerDescEl = document.getElementById('p-offer-desc');
+            const offerValidEl = document.getElementById('p-offer-valid');
+
+            if (discountEl) discountEl.value = p.discountPercentage || '';
+            if (offerDescEl) offerDescEl.value = p.offerDescription || '';
+            if (offerValidEl) {
+                if (p.offerValidUntil) {
+                    const date = new Date(p.offerValidUntil);
+                    offerValidEl.value = date.toISOString().split('T')[0];
+                } else {
+                    offerValidEl.value = '';
+                }
             }
 
             // Subscription fields logic
@@ -1443,7 +1445,8 @@
                 document.getElementById('p-rate').value = rate;
 
                 document.getElementById('p-desc').value = p.description;
-                document.getElementById('p-image').value = p.imageUrl || '';
+                const imageEl = document.getElementById('p-image');
+                if (imageEl) imageEl.value = p.imageUrl || '';
             }
 
             document.getElementById('modal-title').textContent = isSub ? 'Edit Subscription Plan' : 'Edit Service Config';
@@ -1490,24 +1493,24 @@
             }
 
             // Add image URL if provided
-            const imageUrl = document.getElementById('p-image').value;
-            if (imageUrl) {
-                data.imageUrl = imageUrl;
+            const imageEl = document.getElementById('p-image');
+            if (imageEl && imageEl.value) {
+                data.imageUrl = imageEl.value;
             }
 
             // Add offer fields if provided
-            const discount = document.getElementById('p-discount').value;
-            const offerDesc = document.getElementById('p-offer-desc').value;
-            const offerValid = document.getElementById('p-offer-valid').value;
+            const discountEl = document.getElementById('p-discount');
+            const offerDescEl = document.getElementById('p-offer-desc');
+            const offerValidEl = document.getElementById('p-offer-valid');
 
-            if (discount && parseInt(discount) > 0) {
-                data.discountPercentage = parseInt(discount);
+            if (discountEl && parseInt(discountEl.value) > 0) {
+                data.discountPercentage = parseInt(discountEl.value);
             }
-            if (offerDesc) {
-                data.offerDescription = offerDesc;
+            if (offerDescEl && offerDescEl.value) {
+                data.offerDescription = offerDescEl.value;
             }
-            if (offerValid) {
-                data.offerValidUntil = new Date(offerValid).toISOString();
+            if (offerValidEl && offerValidEl.value) {
+                data.offerValidUntil = new Date(offerValidEl.value).toISOString();
             }
 
             // Add subscription fields
