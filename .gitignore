@@ -118,3 +118,12 @@ logs/
 *.cert
 secrets/
 credentials/
+
+# ⚠️ CRITICAL: application.properties contains real passwords (DB, JWT, Razorpay, Email)
+# NEVER commit this to GitHub!
+backend/src/main/resources/application.properties
+backend/src/main/resources/application-prod.properties
+backend/src/main/resources/application-local.properties
+
+# ===== GEMINI AI =====
+.gemini/
