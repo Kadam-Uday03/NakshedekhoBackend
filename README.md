@@ -1,4 +1,4 @@
-# NaksheDekho - Premium Interior Design Project Management Platform
+# NaksheDekho - Premium Backend Support Design Project Management Platform
 
 A full-stack interior design service platform built with **Java Spring Boot** backend and **HTML/CSS/JavaScript** frontend. This platform enables customers to explore interior design projects, purchase packages, and track their project progress through a professional workflow system.
 
@@ -327,7 +327,10 @@ For issues or questions:
 ---
 
 **Built with ❤️ for NaksheDekho - Premium Interior Design Platform**
-#   N a k s h e d e k h o B a c k e n d  
- #   N a k s h e d e k h o B a c k e n d  
- #   N a k s h e d e k h o B a c k e n d  
+#   N a k s h e d e k h o B a c k e n d 
+ 
+ #   N a k s h e d e k h o B a c k e n d 
+ 
+ #   N a k s h e d e k h o B a c k e n d 
+ 
  
