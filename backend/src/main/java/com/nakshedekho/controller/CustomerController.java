@@ -6,10 +6,12 @@ import com.nakshedekho.model.InteriorProject;
 import com.nakshedekho.model.Payment;
 import com.nakshedekho.model.ProjectStage;
 import com.nakshedekho.model.User;
+import com.nakshedekho.security.InputSanitizer;
 import com.nakshedekho.service.InteriorProjectService;
 import com.nakshedekho.service.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +24,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/customer")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class CustomerController {
 
     private final InteriorProjectService projectService;
     private final PaymentService paymentService;
+
+    @Value("${razorpay.key.id}")
+    private String razorpayKeyId;
 
     @GetMapping("/profile")
     public ResponseEntity<User> getProfile(@AuthenticationPrincipal User user) {
@@ -74,14 +78,20 @@ public class CustomerController {
     }
 
     @GetMapping("/projects/{id}/stages")
-    public ResponseEntity<List<ProjectStage>> getProjectStages(@PathVariable Long id) {
+    public ResponseEntity<List<ProjectStage>> getProjectStages(@PathVariable Long id,
+            @AuthenticationPrincipal User user) {
+        InteriorProject project = projectService.getProjectById(id);
+        // FIX: Ownership check — customer can only see their own project stages
+        if (!project.getCustomer().getId().equals(user.getId())) {
+            return ResponseEntity.status(403).build();
+        }
         return ResponseEntity.ok(projectService.getProjectStages(id));
     }
 
     @PutMapping("/projects/{id}")
     public ResponseEntity<InteriorProject> updateProject(
             @PathVariable Long id,
-            @RequestBody ProjectUpdateRequest request,
+            @Valid @RequestBody ProjectUpdateRequest request,
             @AuthenticationPrincipal User user) {
         InteriorProject project = projectService.getProjectById(id);
 
@@ -89,6 +99,12 @@ public class CustomerController {
         if (!project.getCustomer().getId().equals(user.getId())) {
             return ResponseEntity.status(403).build();
         }
+
+        // Sanitize mutable string fields
+        if (request.getProjectName() != null)
+            request.setProjectName(InputSanitizer.sanitizeText(request.getProjectName()));
+        if (request.getRequirements() != null)
+            request.setRequirements(InputSanitizer.sanitizeText(request.getRequirements()));
 
         InteriorProject updated = projectService.updateProject(id, request);
         return ResponseEntity.ok(updated);
@@ -117,7 +133,7 @@ public class CustomerController {
 
             Map<String, String> response = new HashMap<>();
             response.put("orderId", orderJson.getString("id"));
-            response.put("key", "rzp_test_S5jXL3PACzEwMA");
+            response.put("key", razorpayKeyId);
             response.put("amount", String.valueOf(payment.getAmount().multiply(new BigDecimal("100")).intValue()));
             response.put("currency", "INR");
             return ResponseEntity.ok(response);
@@ -138,12 +154,12 @@ public class CustomerController {
         String paymentId = data.get("razorpay_payment_id");
         String signature = data.get("razorpay_signature");
 
-        boolean valid = paymentService.verifyPaymentSignature(orderId, paymentId, signature);
+        boolean valid = paymentService.verifyPaymentStrict(orderId, paymentId, signature, payment.getAmount());
         if (valid) {
             paymentService.updatePaymentStatus(id, com.nakshedekho.model.PaymentStatus.PAID, paymentId);
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.badRequest().body("Invalid Signature");
+            return ResponseEntity.badRequest().body("Payment integrity failure or invalid signature.");
         }
     }
 }

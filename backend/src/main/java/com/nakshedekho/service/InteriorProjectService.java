@@ -8,6 +8,8 @@ import com.nakshedekho.repository.InteriorProjectRepository;
 import com.nakshedekho.repository.ProjectStageRepository;
 import com.nakshedekho.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class InteriorProjectService {
+
+    private static final Logger logger = LoggerFactory.getLogger(InteriorProjectService.class);
 
     private final InteriorProjectRepository projectRepository;
     private final ProjectStageRepository stageRepository;
@@ -46,8 +50,8 @@ public class InteriorProjectService {
 
             // Log subscription change for audit purposes
             if (hadPreviousSubscription && previousSubscription != null) {
-                System.out.println("Subscription upgraded/changed for customer " + customer.getId() +
-                        " from " + previousSubscription.getName() + " to " + designPackage.getName());
+                logger.info("Subscription changed for customer {} from '{}' to '{}'",
+                        customer.getId(), previousSubscription.getName(), designPackage.getName());
             }
 
             userRepository.save(customer);
@@ -209,6 +213,11 @@ public class InteriorProjectService {
     public List<ProjectStage> getProjectStages(Long projectId) {
         InteriorProject project = getProjectById(projectId);
         return stageRepository.findByProjectOrderByIdAsc(project);
+    }
+
+    public ProjectStage getStageById(Long stageId) {
+        return stageRepository.findById(stageId)
+                .orElseThrow(() -> new RuntimeException("Stage not found: " + stageId));
     }
 
     public ProjectStage updateStage(Long stageId, StageUpdateRequest request) {

@@ -37,4 +37,16 @@ public class ProjectFileService {
         return projectFileRepository.findById(fileId)
                 .orElseThrow(() -> new RuntimeException("File not found"));
     }
+
+    /**
+     * Checks whether a file (identified by its stored filename segment of the URL)
+     * belongs to a project that the given user is a customer or assigned manager of.
+     * Used by the download endpoint to prevent IDOR access to arbitrary files.
+     */
+    public boolean isFileAccessibleByUser(String fileName, Long userId) {
+        // The stored fileUrl is "/api/files/download/<storedFileName>"
+        String urlSuffix = "/api/files/download/" + fileName;
+        return projectFileRepository.existsByFileUrlAndProjectCustomerIdOrFileUrlAndProjectManagerId(
+                urlSuffix, userId, urlSuffix, userId);
+    }
 }

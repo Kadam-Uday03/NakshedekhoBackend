@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="NaksheDekho Blog - Read expert insights on interior design, architecture, and construction planning">
+    <title>Blog - NaksheDekho</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+        /* ── Blog Page Specific Styles ─────────────────────────── */
+        :root {
+            --blog-primary: #0D3B66;
+            --blog-accent: #00B5E2;
+            --blog-card-bg: #fff;
+            --blog-shadow: 0 4px 24px rgba(13,59,102,0.10);
+            --blog-radius: 18px;
+            --blog-tag-bg: rgba(0,181,226,0.10);
+            --blog-tag-color: #0077a8;
+        }
+
+        /* ── Hero ─────────────────────────────────────────────── */
+
+
+        /* ── Search + Filter Bar ─────────────────────────────── */
+        .blog-controls {
+            background: #f7fafd;
+            border-bottom: 1px solid #e4edf5;
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+        .blog-controls-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .blog-search-wrap {
+            flex: 1;
+            min-width: 220px;
+            position: relative;
+        }
+        .blog-search-wrap input {
+            width: 100%;
+            padding: 0.65rem 1rem 0.65rem 2.8rem;
+            border: 1.5px solid #dde5ee;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            outline: none;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+        .blog-search-wrap input:focus { border-color: var(--blog-accent); }
+        .blog-search-icon {
+            position: absolute; left: 0.9rem; top: 50%;
+            transform: translateY(-50%);
+            color: #8ca0b8;
+            font-size: 1rem;
+            pointer-events: none;
+        }
+        .category-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .cat-pill {
+            padding: 0.4rem 1.1rem;
+            border-radius: 50px;
+            border: 1.5px solid #d1dce8;
+            background: #fff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #445566;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+        .cat-pill:hover, .cat-pill.active {
+            background: var(--blog-accent);
+            border-color: var(--blog-accent);
+            color: #fff;
+        }
+
+        /* ── Main Layout ─────────────────────────────────────── */
+        .blog-layout {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2.5rem;
+        }
+        @media(max-width:820px) {
+            .blog-layout { grid-template-columns: 1fr; }
+            .blog-sidebar { order: -1; }
+        }
+
+        /* ── Blog Cards ──────────────────────────────────────── */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 1.8rem;
+        }
+        .blog-card {
+            background: var(--blog-card-bg);
+            border-radius: var(--blog-radius);
+            overflow: hidden;
+            box-shadow: var(--blog-shadow);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eaf1f8;
+        }
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(13,59,102,0.15);
+        }
+        .blog-card-img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #cfe8f5, #e8f4fc);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+        }
+        .blog-card-img img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .blog-card-body {
+            padding: 1.2rem 1.4rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .blog-card-meta {
+            display: flex;
+            gap: 0.7rem;
+            align-items: center;
+            margin-bottom: 0.65rem;
+            flex-wrap: wrap;
+        }
+        .blog-tag {
+            background: var(--blog-tag-bg);
+            color: var(--blog-tag-color);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.7rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .blog-date {
+            font-size: 0.8rem;
+            color: #8ca0b8;
+        }
+        .blog-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--blog-primary);
+            line-height: 1.4;
+            margin-bottom: 0.6rem;
+        }
+        .blog-card-excerpt {
+            font-size: 0.9rem;
+            color: #556677;
+            line-height: 1.6;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .blog-card-footer {
+            margin-top: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .blog-author-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .blog-author-avatar {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blog-accent), var(--blog-primary));
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .blog-author-name {
+            font-size: 0.82rem;
+            color: #445566;
+            font-weight: 600;
+        }
+        .blog-views {
+            font-size: 0.78rem;
+            color: #8ca0b8;
+        }
+
+        /* ── Skeleton Loader ────────────────────────────────── */
+        .skeleton {
+            background: linear-gradient(90deg, #eef4f8 25%, #dde8ef 50%, #eef4f8 75%);
+            background-size: 400% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+
+        /* ── Sidebar ────────────────────────────────────────── */
+        .blog-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+        .sidebar-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 1.4rem;
+            box-shadow: 0 2px 16px rgba(13,59,102,0.07);
+            border: 1px solid #eaf1f8;
+        }
+        .sidebar-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--blog-primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid var(--blog-accent);
+        }
+        .sidebar-tag-cloud { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .sidebar-tag {
+            background: var(--blog-tag-bg);
+            color: var(--blog-tag-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .sidebar-tag:hover { background: var(--blog-accent); color: #fff; }
+
+        /* ── Write Blog CTA (Logged-in only) ────────────────── */
+        .write-cta {
+            background: linear-gradient(135deg, #0D3B66, #0a5490);
+            border-radius: 14px;
+            padding: 1.4rem;
+            color: #fff;
+            text-align: center;
+        }
+        .write-cta h3 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            border: none;
+            padding: 0;
+            color: #fff;
+        }
+        .write-cta p { font-size: 0.88rem; color: rgba(255,255,255,0.75); margin-bottom: 1rem; }
+        .write-cta .btn { width: 100%; display: block; }
+
+        /* ── Pagination ─────────────────────────────────────── */
+        .blog-pagination {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .page-btn {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            border: 1.5px solid #d1dce8;
+            background: #fff;
+            font-weight: 600;
+            color: #445;
+            cursor: pointer;
+            transition: all 0.18s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .page-btn:hover, .page-btn.active {
+            background: var(--blog-primary);
+            border-color: var(--blog-primary);
+            color: #fff;
+        }
+
+        /* ── Post Detail Modal ──────────────────────────────── */
+        .post-modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(8,24,44,0.65);
+            z-index: 10000;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+        .post-modal-overlay.open { display: flex; justify-content: center; align-items: flex-start; }
+        .post-modal {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 760px;
+            width: 100%;
+            margin: auto;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(8,24,44,0.3);
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        .post-modal-cover {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #cfe8f5, #e8f4fc);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 5rem;
+        }
+        .post-modal-cover img { width:100%; height:100%; object-fit:cover; }
+        .post-modal-body { padding: 2rem 2.5rem 2.5rem; }
+        .post-modal-header { margin-bottom: 1.4rem; }
+        .post-modal-tags { display:flex; gap:0.5rem; margin-bottom:0.8rem; flex-wrap:wrap; }
+        .post-modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--blog-primary);
+            line-height: 1.3;
+            margin-bottom: 0.8rem;
+        }
+        .post-modal-meta {
+            display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eaf1f8;
+            margin-bottom: 1.5rem;
+        }
+        .post-modal-meta span { font-size: 0.87rem; color: #8ca0b8; }
+        .post-modal-content {
+            font-size: 1rem;
+            color: #34495e;
+            line-height: 1.85;
+        }
+        .post-modal-content h2, .post-modal-content h3 {
+            color: var(--blog-primary);
+            font-family: 'Outfit', sans-serif;
+            margin: 1.5rem 0 0.6rem;
+        }
+        .post-modal-content p { margin-bottom: 1rem; }
+        .post-modal-content ul, .post-modal-content ol {
+            margin: 0.8rem 0 1rem 1.5rem;
+        }
+        .post-modal-content img { max-width:100%; border-radius:12px; margin:1rem 0; }
+        .post-modal-close {
+            position: absolute;
+            top: 1.2rem; right: 1.4rem;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: background 0.15s;
+        }
+        .post-modal-close:hover { background: #fff; }
+        .post-modal-wrapper { position: relative; }
+
+        /* ── Write / Edit Blog Modal ────────────────────────── */
+        .write-modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(8,24,44,0.7);
+            z-index: 11000;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+        .write-modal-overlay.open { display: flex; justify-content: center; align-items: flex-start; }
+        .write-modal {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 820px;
+            width: 100%;
+            margin: auto;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(8,24,44,0.35);
+            animation: modalIn 0.3s ease;
+        }
+        .write-modal-header {
+            background: linear-gradient(135deg, #0D3B66, #0a5490);
+            padding: 1.5rem 2rem;
+            color: #fff;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .write-modal-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .write-modal-close {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        .write-modal-close:hover { background: rgba(255,255,255,0.28); }
+        .write-modal-body { padding: 2rem 2.5rem 2.5rem; }
+        .write-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+        @media(max-width:600px) { .write-form-grid { grid-template-columns: 1fr; } }
+        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #445566;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.7rem 1rem;
+            border: 1.5px solid #dde5ee;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+            outline: none;
+            color: #2c3e50;
+            background: #fafcfe;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus { border-color: var(--blog-accent); background: #fff; }
+        .form-group textarea { resize: vertical; min-height: 250px; line-height: 1.7; }
+        .status-toggle {
+            display: flex; gap: 0.8rem;
+        }
+        .status-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border-radius: 10px;
+            border: 1.5px solid #dde5ee;
+            background: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.18s;
+            color: #445566;
+        }
+        .status-btn[data-status="DRAFT"].active { background: #fff7e6; border-color: #f59e0b; color: #b45309; }
+        .status-btn[data-status="PUBLISHED"].active { background: #ecfdf5; border-color: #10b981; color: #047857; }
+        .write-form-actions {
+            display: flex; gap: 1rem; margin-top: 1.8rem;
+            justify-content: flex-end; flex-wrap: wrap;
+        }
+
+        /* ── Empty State ───────────────────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #8ca0b8;
+            grid-column: 1 / -1;
+        }
+        .empty-state .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .empty-state h3 { font-family: 'Outfit', sans-serif; color: #445; margin-bottom: 0.5rem; }
+
+        /* ── My Posts Tab (in sidebar) ────────────────────── */
+        .my-posts-list { display: flex; flex-direction: column; gap: 0.8rem; }
+        .my-post-item {
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #eaf1f8;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .my-post-item:hover { background: #f0f7ff; }
+        .my-post-item-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2c3e50;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .my-post-status {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+        }
+        .my-post-status.DRAFT { background: #fff7e6; color: #b45309; }
+        .my-post-status.PUBLISHED { background: #ecfdf5; color: #047857; }
+        .my-post-actions { display: flex; gap: 0.3rem; }
+        .my-post-btn {
+            width: 28px; height: 28px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        .my-post-btn.edit { background: #e0f2fe; color: #0369a1; }
+        .my-post-btn.edit:hover { background: #bae6fd; }
+        .my-post-btn.delete { background: #fef2f2; color: #dc2626; }
+        .my-post-btn.delete:hover { background: #fecaca; }
+
+        /* ── Loading Spinner ───────────────────────────────── */
+        .spinner-small {
+            display: inline-block;
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .blog-count-badge {
+            background: var(--blog-accent);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.15rem 0.55rem;
+            border-radius: 50px;
+            margin-left: 0.4rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="NaksheDekho Logo">
+                <div class="logo-text-group">
+                    <div class="logo-brand">Nakshe<span>Dekho</span></div>
+                    <div class="logo-slogan">design.draft.deliver</div>
+                </div>
+            </a>
+
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="projects.html" class="nav-link">Projects</a></li>
+                <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
+                <li class="nav-item"><a href="blog.html" class="nav-link active">Blog</a></li>
+                <li class="nav-item"><a href="packages.html" class="nav-link">Subscription</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+                <span id="auth-nav-placeholder" style="display: contents;"></span>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Blog Hero -->
+    <header class="page-header">
+        <div class="container" style="position: relative; z-index: 10;">
+            <h1 style="color: white; font-family: 'Outfit', sans-serif; margin-bottom: 1rem;">Insights & <span style="color: var(--accent-cyan);">Ideas</span><br>From Our Experts</h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem; max-width: 700px; margin: 0 auto 2rem;">Explore articles on interior design, architecture, construction planning, and industry trends — written by professionals for professionals.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="#blog-main" class="btn btn-primary" onclick="smooth(event,'blog-main')">Read Articles</a>
+                <button class="btn btn-outline" id="hero-write-btn" style="color:#fff;border-color:rgba(255,255,255,0.5);display:none;" onclick="openWriteModal()">✏️ Write an Article</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Controls Bar -->
+    <div class="blog-controls" id="blog-main">
+        <div class="blog-controls-inner">
+            <div class="blog-search-wrap">
+                <span class="blog-search-icon">🔍</span>
+                <input type="text" id="blog-search-input" placeholder="Search articles..." oninput="debounceSearch(this.value)">
+            </div>
+            <div class="category-pills" id="category-pills">
+                <button class="cat-pill active" data-cat="" onclick="filterByCategory(this,'')">All</button>
+                <button class="cat-pill" data-cat="design" onclick="filterByCategory(this,'design')">Design</button>
+                <button class="cat-pill" data-cat="architecture" onclick="filterByCategory(this,'architecture')">Architecture</button>
+                <button class="cat-pill" data-cat="construction" onclick="filterByCategory(this,'construction')">Construction</button>
+                <button class="cat-pill" data-cat="tips" onclick="filterByCategory(this,'tips')">Tips</button>
+                <button class="cat-pill" data-cat="news" onclick="filterByCategory(this,'news')">News</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Blog Layout -->
+    <main class="blog-layout">
+        <!-- Posts Section -->
+        <section>
+            <div class="blog-grid" id="blog-grid">
+                <!-- Posts injected by JS -->
+            </div>
+            <div id="blog-empty" class="empty-state" style="display:none">
+                <div class="empty-icon">📝</div>
+                <h3>No articles found</h3>
+                <p>Try a different category or search term</p>
+            </div>
+            <div class="blog-pagination" id="blog-pagination"></div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="blog-sidebar">
+            <!-- Write CTA for logged-in users -->
+            <div class="write-cta" id="write-cta-card" style="display:none">
+                <h3>✍️ Share Your Knowledge</h3>
+                <p>Got insights to share? Publish your article and reach our community of design professionals.</p>
+                <button class="btn btn-secondary" onclick="openWriteModal()">Write an Article</button>
+            </div>
+
+            <!-- Login prompt for guests -->
+            <div class="sidebar-card" id="login-cta-card">
+                <h3>Join Our Community</h3>
+                <p style="font-size:0.88rem;color:#667;margin-bottom:1rem;">Login to write and publish your own articles on design, architecture & more.</p>
+                <a href="login.html" class="btn btn-secondary" style="display:block;text-align:center;">Login / Register</a>
+            </div>
+
+            <!-- My Posts (logged-in) -->
+            <div class="sidebar-card" id="my-posts-card" style="display:none">
+                <h3>My Articles <span id="my-posts-count" class="blog-count-badge">0</span></h3>
+                <div class="my-posts-list" id="my-posts-list">
+                    <p style="font-size:0.85rem;color:#8ca0b8;text-align:center;padding:1rem">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Popular Tags -->
+            <div class="sidebar-card">
+                <h3>Popular Topics</h3>
+                <div class="sidebar-tag-cloud">
+                    <span class="sidebar-tag" onclick="tagSearch('interior design')">Interior Design</span>
+                    <span class="sidebar-tag" onclick="tagSearch('2D drawing')">2D Drawing</span>
+                    <span class="sidebar-tag" onclick="tagSearch('3D render')">3D Render</span>
+                    <span class="sidebar-tag" onclick="tagSearch('construction')">Construction</span>
+                    <span class="sidebar-tag" onclick="tagSearch('architect')">Architecture</span>
+                    <span class="sidebar-tag" onclick="tagSearch('vastu')">Vastu</span>
+                    <span class="sidebar-tag" onclick="tagSearch('budget')">Budget Tips</span>
+                    <span class="sidebar-tag" onclick="tagSearch('material')">Materials</span>
+                </div>
+            </div>
+
+            <!-- About Blog -->
+            <div class="sidebar-card">
+                <h3>About This Blog</h3>
+                <p style="font-size:0.88rem;color:#667;line-height:1.7">NaksheDekho Blog is written by our team and community of registered professionals. Articles cover design trends, technical guides, and industry news.</p>
+            </div>
+        </aside>
+    </main>
+
+    <!-- ══ Post Detail Modal ══════════════════════════════════ -->
+    <div class="post-modal-overlay" id="post-modal-overlay" onclick="closePostModal(event)">
+        <div class="post-modal-wrapper">
+            <button class="post-modal-close" onclick="closePostModalDirect()">✕</button>
+            <div class="post-modal" id="post-modal">
+                <div class="post-modal-cover" id="post-cover">📖</div>
+                <div class="post-modal-body">
+                    <div class="post-modal-header">
+                        <div class="post-modal-tags" id="post-modal-tags"></div>
+                        <h2 class="post-modal-title" id="post-modal-title">Loading...</h2>
+                        <div class="post-modal-meta">
+                            <span id="post-modal-author">👤 Author</span>
+                            <span id="post-modal-date">📅 Date</span>
+                            <span id="post-modal-views">👁️ Views</span>
+                        </div>
+                    </div>
+                    <div class="post-modal-content" id="post-modal-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ Write / Edit Blog Modal ═══════════════════════════ -->
+    <div class="write-modal-overlay" id="write-modal-overlay" onclick="closeWriteModal(event)">
+        <div class="write-modal" onclick="event.stopPropagation()">
+            <div class="write-modal-header">
+                <h2 id="write-modal-title">✍️ Write an Article</h2>
+                <button class="write-modal-close" onclick="closeWriteModalDirect()">✕</button>
+            </div>
+            <div class="write-modal-body">
+                <form id="blog-write-form" onsubmit="submitBlog(event)">
+                    <input type="hidden" id="edit-post-id" value="">
+                    <div class="write-form-grid">
+                        <div class="form-group full-width">
+                            <label for="post-title">Article Title *</label>
+                            <input type="text" id="post-title" placeholder="Enter a compelling title..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="post-category">Category</label>
+                            <select id="post-category">
+                                <option value="">-- Select Category --</option>
+                                <option value="design">Design</option>
+                                <option value="architecture">Architecture</option>
+                                <option value="construction">Construction</option>
+                                <option value="tips">Tips & Tricks</option>
+                                <option value="news">Industry News</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="post-tags">Tags (comma separated)</label>
+                            <input type="text" id="post-tags" placeholder="e.g. interior, 3D, vastu">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="post-excerpt">Short Summary (Excerpt) *</label>
+                            <input type="text" id="post-excerpt" placeholder="One line summary visible on card..." required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="post-content">Article Content * <span style="font-weight:400;color:#8ca0b8">(HTML is supported)</span></label>
+                            <textarea id="post-content" placeholder="Write your article here... You can use HTML tags like &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;b&gt; etc." required></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="post-cover-url">Cover Image URL <span style="font-weight:400;color:#8ca0b8">(optional)</span></label>
+                            <input type="text" id="post-cover-url" placeholder="https://... or leave blank for default emoji">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Publication Status</label>
+                            <div class="status-toggle">
+                                <button type="button" class="status-btn active" data-status="DRAFT" id="btn-draft" onclick="selectStatus('DRAFT')">📄 Save as Draft</button>
+                                <button type="button" class="status-btn" data-status="PUBLISHED" id="btn-published" onclick="selectStatus('PUBLISHED')">🚀 Publish Now</button>
+                            </div>
+                            <input type="hidden" id="post-status" value="DRAFT">
+                        </div>
+                    </div>
+                    <div class="write-form-actions">
+                        <button type="button" class="btn btn-outline" style="color:#445;border-color:#d1dce8;" onclick="closeWriteModalDirect()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="submit-blog-btn">💾 Save Article</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>NaksheDekho</h3>
+                <p>We act as your dedicated backend team for drafting, 3D visualisation, and estimation—so you can focus on clients, design, and growth.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="about.html">About Us</a>
+                <a href="projects.html">Portfolio</a>
+                <a href="services.html">Services</a>
+                <a href="blog.html">Blog</a>
+                <a href="packages.html">Subscription</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: nakshedekho@gmail.com</p>
+                <p>Phone: +91 8962569111</p>
+                <p>Address: Indore, India</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <p>Instagram | Facebook | WhatsApp</p>
+                <a href="contact.html" class="btn btn-secondary mt-1">Get in Touch</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 NaksheDekho. All rights reserved. | Premium Interior Design Platform</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        /* ────────────────────────────────────────────────────────
+           BLOG PAGE LOGIC
+        ──────────────────────────────────────────────────────── */
+
+        // ── State ───────────────────────────────────────────────
+        let currentPage = 0;
+        const PAGE_SIZE = 9;
+        let currentCategory = '';
+        let currentSearch = '';
+        let totalPages = 0;
+        let searchTimer = null;
+
+        // ── Blog API helpers ────────────────────────────────────
+        const blogAPI = {
+            async getPublished(page = 0, size = PAGE_SIZE, category = '') {
+                let url = `/api/public/blogs?page=${page}&size=${size}`;
+                if (category) url += `&category=${encodeURIComponent(category)}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Failed to load posts');
+                return res.json();
+            },
+            async search(query, page = 0, size = PAGE_SIZE) {
+                const res = await fetch(`/api/public/blogs/search?query=${encodeURIComponent(query)}&page=${page}&size=${size}`);
+                if (!res.ok) throw new Error('Search failed');
+                return res.json();
+            },
+            async getBySlug(slug) {
+                const res = await fetch(`/api/public/blogs/${slug}`);
+                if (!res.ok) throw new Error('Post not found');
+                return res.json();
+            },
+            async getMyPosts() {
+                return api.get('/blog/my');
+            },
+            async create(data) {
+                return api.post('/blog', data);
+            },
+            async update(id, data) {
+                return api.put(`/blog/${id}`, data);
+            },
+            async getById(id) {
+                return api.get(`/blog/${id}`);
+            },
+            async remove(id) {
+                return api.delete(`/blog/${id}`);
+            }
+        };
+
+        // ── Utility ──────────────────────────────────────────────
+        function fmtDate(d) {
+            if (!d) return '';
+            return new Date(d).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        function initials(name) {
+            if (!name) return '?';
+            return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+        }
+        function smooth(e, id) {
+            e.preventDefault();
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+        const EMOJI_MAP = { design: '🎨', architecture: '🏛️', construction: '🏗️', tips: '💡', news: '📰', other: '📝' };
+        function categoryEmoji(cat) { return EMOJI_MAP[cat] || '📝'; }
+
+        // ── Page Init ────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            // Navbar scroll
+            window.addEventListener('scroll', () => {
+                const nb = document.getElementById('navbar');
+                if (nb) nb.classList.toggle('scrolled', window.scrollY > 50);
+            });
+
+            // Auth UI
+            if (typeof authAPI !== 'undefined' && authAPI.isAuthenticated()) {
+                document.getElementById('write-cta-card').style.display = 'block';
+                document.getElementById('login-cta-card').style.display = 'none';
+                document.getElementById('my-posts-card').style.display = 'block';
+                document.getElementById('hero-write-btn').style.display = 'inline-flex';
+                loadMyPosts();
+            }
+
+            loadPosts();
+        });
+
+        // ── Load & Render Posts ──────────────────────────────────
+        async function loadPosts() {
+            showSkeletons();
+            try {
+                let data;
+                if (currentSearch.trim().length > 1) {
+                    data = await blogAPI.search(currentSearch, currentPage, PAGE_SIZE);
+                } else {
+                    data = await blogAPI.getPublished(currentPage, PAGE_SIZE, currentCategory);
+                }
+                totalPages = data.totalPages || 0;
+                renderPosts(data.content || []);
+                renderPagination(data.totalPages || 0);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('blog-grid').innerHTML = '';
+                document.getElementById('blog-empty').style.display = 'block';
+                document.getElementById('blog-empty').querySelector('p').textContent = 'Could not load articles. Please try again.';
+            }
+        }
+
+        function renderPosts(posts) {
+            const grid = document.getElementById('blog-grid');
+            const empty = document.getElementById('blog-empty');
+            if (!posts || posts.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+            grid.innerHTML = posts.map(post => {
+                const coverHtml = post.coverImageUrl
+                    ? `<div class="blog-card-img"><img src="${post.coverImageUrl}" alt="${post.title}" onerror="this.parentElement.innerHTML='${categoryEmoji(post.category)}'"></div>`
+                    : `<div class="blog-card-img">${categoryEmoji(post.category)}</div>`;
+                const authorName = post.author?.fullName || 'Team NaksheDekho';
+                return `
+                <div class="blog-card" onclick="openPost('${post.slug}')">
+                    ${coverHtml}
+                    <div class="blog-card-body">
+                        <div class="blog-card-meta">
+                            ${post.category ? `<span class="blog-tag">${post.category}</span>` : ''}
+                            <span class="blog-date">${fmtDate(post.publishedAt || post.createdAt)}</span>
+                        </div>
+                        <h3 class="blog-card-title">${escHtml(post.title)}</h3>
+                        <p class="blog-card-excerpt">${escHtml(post.excerpt || '')}</p>
+                        <div class="blog-card-footer">
+                            <div class="blog-author-info">
+                                <div class="blog-author-avatar">${initials(authorName)}</div>
+                                <span class="blog-author-name">${escHtml(authorName)}</span>
+                            </div>
+                            <span class="blog-views">👁️ ${post.viewCount || 0}</span>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function showSkeletons() {
+            const grid = document.getElementById('blog-grid');
+            document.getElementById('blog-empty').style.display = 'none';
+            grid.innerHTML = Array.from({ length: 6 }, () => `
+                <div class="blog-card">
+                    <div class="blog-card-img skeleton"></div>
+                    <div class="blog-card-body" style="gap:0.6rem">
+                        <div class="skeleton" style="height:18px;width:40%;border-radius:50px"></div>
+                        <div class="skeleton" style="height:22px;width:90%"></div>
+                        <div class="skeleton" style="height:14px;width:100%"></div>
+                        <div class="skeleton" style="height:14px;width:75%"></div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function escHtml(s) {
+            if (!s) return '';
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        // ── Pagination ───────────────────────────────────────────
+        function renderPagination(total) {
+            const pag = document.getElementById('blog-pagination');
+            if (total <= 1) { pag.innerHTML = ''; return; }
+            let html = '';
+            if (currentPage > 0) html += `<button class="page-btn" onclick="goPage(${currentPage - 1})">‹</button>`;
+            for (let i = 0; i < total; i++) {
+                html += `<button class="page-btn${i === currentPage ? ' active' : ''}" onclick="goPage(${i})">${i + 1}</button>`;
+            }
+            if (currentPage < total - 1) html += `<button class="page-btn" onclick="goPage(${currentPage + 1})">›</button>`;
+            pag.innerHTML = html;
+        }
+        function goPage(p) {
+            currentPage = p;
+            document.getElementById('blog-main').scrollIntoView({ behavior: 'smooth' });
+            loadPosts();
+        }
+
+        // ── Search & Filter ──────────────────────────────────────
+        function debounceSearch(val) {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                currentSearch = val;
+                currentPage = 0;
+                loadPosts();
+            }, 500);
+        }
+        function filterByCategory(el, cat) {
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            currentCategory = cat;
+            currentSearch = '';
+            document.getElementById('blog-search-input').value = '';
+            currentPage = 0;
+            loadPosts();
+        }
+        function tagSearch(tag) {
+            currentSearch = tag;
+            currentCategory = '';
+            document.getElementById('blog-search-input').value = tag;
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            document.querySelector('.cat-pill[data-cat=""]').classList.add('active');
+            currentPage = 0;
+            loadPosts();
+            document.getElementById('blog-main').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ── Post Detail Modal ────────────────────────────────────
+        async function openPost(slug) {
+            const overlay = document.getElementById('post-modal-overlay');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            // Reset
+            document.getElementById('post-modal-title').textContent = 'Loading...';
+            document.getElementById('post-modal-content').innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner-small" style="border-top-color:#0D3B66;border-color:rgba(13,59,102,0.2);width:32px;height:32px;border-width:3px"></div></div>';
+            document.getElementById('post-cover').innerHTML = '📖';
+            document.getElementById('post-modal-tags').innerHTML = '';
+
+            try {
+                const post = await blogAPI.getBySlug(slug);
+                document.getElementById('post-modal-title').textContent = post.title;
+                document.getElementById('post-modal-author').textContent = '👤 ' + (post.author?.fullName || 'Team NaksheDekho');
+                document.getElementById('post-modal-date').textContent = '📅 ' + fmtDate(post.publishedAt || post.createdAt);
+                document.getElementById('post-modal-views').textContent = '👁️ ' + (post.viewCount || 1) + ' views';
+
+                // Tags
+                const tagsHtml = (post.tags || []).map(t => `<span class="blog-tag">${escHtml(t)}</span>`).join('') +
+                    (post.category ? `<span class="blog-tag">${escHtml(post.category)}</span>` : '');
+                document.getElementById('post-modal-tags').innerHTML = tagsHtml;
+
+                // Cover
+                const coverEl = document.getElementById('post-cover');
+                if (post.coverImageUrl) {
+                    coverEl.innerHTML = `<img src="${post.coverImageUrl}" alt="${escHtml(post.title)}" onerror="this.parentElement.innerHTML='${categoryEmoji(post.category)}'">`;
+                } else {
+                    coverEl.innerHTML = categoryEmoji(post.category);
+                }
+
+                // Content (allow HTML authored by user)
+                document.getElementById('post-modal-content').innerHTML = post.content || '<p>No content available.</p>';
+            } catch (err) {
+                document.getElementById('post-modal-content').innerHTML = `<p style="color:#dc2626">Failed to load post. Please try again.</p>`;
+            }
+        }
+        function closePostModal(e) {
+            if (e.target === document.getElementById('post-modal-overlay')) closePostModalDirect();
+        }
+        function closePostModalDirect() {
+            document.getElementById('post-modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // ── My Posts (sidebar) ───────────────────────────────────
+        async function loadMyPosts() {
+            const list = document.getElementById('my-posts-list');
+            const count = document.getElementById('my-posts-count');
+            try {
+                const posts = await blogAPI.getMyPosts();
+                count.textContent = posts.length;
+                if (!posts || posts.length === 0) {
+                    list.innerHTML = `<p style="font-size:0.85rem;color:#8ca0b8;text-align:center;padding:1rem">No articles yet. Write your first one!</p>`;
+                    return;
+                }
+                list.innerHTML = posts.map(p => `
+                    <div class="my-post-item">
+                        <span class="my-post-title" title="${escHtml(p.title)}">${escHtml(p.title)}</span>
+                        <span class="my-post-status ${p.status}">${p.status}</span>
+                        <div class="my-post-actions">
+                            <button class="my-post-btn edit" title="Edit" onclick="editPost(${p.id},event)">✏️</button>
+                            <button class="my-post-btn delete" title="Delete" onclick="deletePost(${p.id},event)">🗑️</button>
+                        </div>
+                    </div>`).join('');
+            } catch (err) {
+                list.innerHTML = `<p style="font-size:0.85rem;color:#dc2626;text-align:center;padding:1rem">Could not load your posts.</p>`;
+            }
+        }
+
+        // ── Write / Edit Modal ───────────────────────────────────
+        let selectedStatus = 'DRAFT';
+
+        function openWriteModal() {
+            if (!authAPI.isAuthenticated()) {
+                showNotification('Please login to write an article.', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1200);
+                return;
+            }
+            document.getElementById('write-modal-title').textContent = '✍️ Write an Article';
+            document.getElementById('blog-write-form').reset();
+            document.getElementById('edit-post-id').value = '';
+            selectStatus('DRAFT');
+            document.getElementById('write-modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function editPost(id, e) {
+            if (e) e.stopPropagation();
+            if (!authAPI.isAuthenticated()) return;
+            try {
+                const post = await blogAPI.getById(id);
+                document.getElementById('write-modal-title').textContent = '✏️ Edit Article';
+                document.getElementById('edit-post-id').value = post.id;
+                document.getElementById('post-title').value = post.title || '';
+                document.getElementById('post-category').value = post.category || '';
+                document.getElementById('post-tags').value = (post.tags || []).join(', ');
+                document.getElementById('post-excerpt').value = post.excerpt || '';
+                document.getElementById('post-content').value = post.content || '';
+                document.getElementById('post-cover-url').value = post.coverImageUrl || '';
+                selectStatus(post.status || 'DRAFT');
+                document.getElementById('write-modal-overlay').classList.add('open');
+                document.body.style.overflow = 'hidden';
+            } catch (err) {
+                showNotification('Could not load post for editing.', 'error');
+            }
+        }
+
+        function closeWriteModal(e) {
+            if (e.target === document.getElementById('write-modal-overlay')) closeWriteModalDirect();
+        }
+        function closeWriteModalDirect() {
+            document.getElementById('write-modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function selectStatus(s) {
+            selectedStatus = s;
+            document.getElementById('post-status').value = s;
+            document.getElementById('btn-draft').classList.toggle('active', s === 'DRAFT');
+            document.getElementById('btn-published').classList.toggle('active', s === 'PUBLISHED');
+        }
+
+        async function submitBlog(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-blog-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-small"></span>Saving...';
+
+            const tagsRaw = document.getElementById('post-tags').value;
+            const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+            const payload = {
+                title:        document.getElementById('post-title').value.trim(),
+                excerpt:      document.getElementById('post-excerpt').value.trim(),
+                content:      document.getElementById('post-content').value.trim(),
+                category:     document.getElementById('post-category').value,
+                coverImageUrl: document.getElementById('post-cover-url').value.trim() || null,
+                tags,
+                status:       selectedStatus
+            };
+
+            const editId = document.getElementById('edit-post-id').value;
+            try {
+                if (editId) {
+                    await blogAPI.update(editId, payload);
+                    showNotification('Article updated successfully! ✅', 'success');
+                } else {
+                    await blogAPI.create(payload);
+                    showNotification('Article saved! ' + (selectedStatus === 'PUBLISHED' ? '🚀 It is now live!' : '📄 Draft saved.'), 'success');
+                }
+                closeWriteModalDirect();
+                loadMyPosts();
+                if (selectedStatus === 'PUBLISHED') {
+                    currentPage = 0;
+                    loadPosts();
+                }
+            } catch (err) {
+                showNotification(err.message || 'Failed to save article.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '💾 Save Article';
+            }
+        }
+
+        async function deletePost(id, e) {
+            if (e) e.stopPropagation();
+            if (!confirm('Are you sure you want to delete this article? This cannot be undone.')) return;
+            try {
+                await blogAPI.remove(id);
+                showNotification('Article deleted.', 'success');
+                loadMyPosts();
+                loadPosts();
+            } catch (err) {
+                showNotification(err.message || 'Could not delete article.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

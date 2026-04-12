@@ -53,7 +53,28 @@ public class PaymentService {
         try {
             String payload = orderId + "|" + paymentId;
             String generatedSignature = calculateHmacSHA256(payload, razorpayKeySecret);
-            return generatedSignature.equals(signature);
+            return java.security.MessageDigest.isEqual(generatedSignature.getBytes(), signature.getBytes());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean verifyPaymentStrict(String orderId, String paymentId, String signature, BigDecimal expectedAmount) {
+        try {
+            // 1. Verify Signature first
+            if (!verifyPaymentSignature(orderId, paymentId, signature)) {
+                return false;
+            }
+
+            // 2. Fetch Order from Razorpay to verify actual paid amount
+            initRazorpay();
+            Order order = razorpayClient.orders.fetch(orderId);
+            
+            // Razorpay amounts are in paise
+            BigDecimal actualPaidAmount = new BigDecimal(order.get("amount").toString()).divide(new BigDecimal("100"));
+            
+            // 3. Ensure they paid the full amount expected
+            return actualPaidAmount.compareTo(expectedAmount) >= 0;
         } catch (Exception e) {
             return false;
         }

@@ -1,5 +1,14 @@
 // API Configuration and Utilities
-const API_BASE_URL = '/api';
+// TODO: When you deploy to Render, paste your Render URL here!
+// Example: const RENDER_API_URL = 'https://nakshedekho-api-xxx.onrender.com';
+const RENDER_API_URL = ''; // Leave blank for local development
+
+const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// Automatically choose local API server or Render API server
+const API_BASE_URL = isLocalHost && !RENDER_API_URL 
+    ? 'http://localhost:8080/api' 
+    : (RENDER_API_URL ? `${RENDER_API_URL}/api` : '/api');
 
 // API Client with JWT token management
 class APIClient {
@@ -46,8 +55,14 @@ class APIClient {
 
             if (!response.ok) {
                 if (response.status === 401) {
+                    // Sirf tab redirect karo jab user pehle se logged in tha (token tha)
+                    // Public pages pe bina token ke API call karne pe redirect mat karo
+                    const hadToken = !!this.token;
                     this.clearToken();
-                    window.location.href = '/login.html';
+                    if (hadToken) {
+                        // Token expire ho gaya tha — login pe bhejo
+                        window.location.href = '/login.html';
+                    }
                     throw new Error('Unauthorized');
                 }
 

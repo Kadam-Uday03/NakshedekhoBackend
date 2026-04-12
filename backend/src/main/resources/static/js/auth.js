@@ -279,7 +279,8 @@ function handleRegisterForm(event) {
         password: form.password.value,
         fullName: form.fullName.value,
         phone: form.phone.value,
-        role: form.role.value
+        professionalCategory: form.professionalCategory ? form.professionalCategory.value : ''
+        // role intentionally omitted — backend always assigns CUSTOMER
     };
 
     const submitBtn = form.querySelector('button[type="submit"]');

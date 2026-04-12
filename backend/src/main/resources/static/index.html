@@ -42,6 +42,7 @@
                 <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
                 <li class="nav-item"><a href="projects.html" class="nav-link">Projects</a></li>
                 <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
+                <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
                 <li class="nav-item"><a href="packages.html" class="nav-link">Subscription</a></li>
                 <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
                 <span id="auth-nav-placeholder" style="display: contents;"></span>
@@ -71,19 +72,23 @@
 
                 <div class="estimator-tabs">
                     <button class="tab-btn active" onclick="switchTab(this, '2D Layout Plan')">
-                        <span class="tab-icon">📐</span>
+                        <span class="tab-icon"><img src="images/icons/2d.png" alt="2D Layout"
+                                style="width: 24px; height: 24px; vertical-align: middle;"></span>
                         <span>2D Layout Plan</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab(this, '3D Front Elevation')">
-                        <span class="tab-icon">🏠</span>
+                        <span class="tab-icon"><img src="images/icons/3d-house.png" alt="3D Front Elevation"
+                                style="width: 24px; height: 24px; vertical-align: middle;"></span>
                         <span>3D Front Elevation</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab(this, 'Structural Drawings')">
-                        <span class="tab-icon">🏗️</span>
+                        <span class="tab-icon"><img src="images/icons/structural-drawing.png" alt="Structural Drawings"
+                                style="width: 24px; height: 24px; vertical-align: middle;"></span>
                         <span>Structural Drawings</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab(this, 'Presentation Plan')">
-                        <span class="tab-icon">📋</span>
+                        <span class="tab-icon"><img src="images/icons/ppt.png" alt="Presentation Plan"
+                                style="width: 24px; height: 24px; vertical-align: middle;"></span>
                         <span>Presentation Plan</span>
                     </button>
                     <button class="tab-btn" onclick="window.location.href='services.html'">
@@ -105,8 +110,7 @@
                         </div>
                         <div class="input-box">
                             <label>Floor</label>
-                            <select id="calc-floor"
-                                onchange="document.getElementById('estimator-result').style.display = 'none';">
+                            <select id="calc-floor" onchange="updateArea()">
                                 <option value="1">Ground Floor</option>
                                 <option value="2">G + 1</option>
                                 <option value="3">G + 2</option>
@@ -299,7 +303,10 @@
             <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">📐</div>
+                        <div class="card-icon" style="margin-bottom: 1rem;">
+                            <img src="images/icons/2d.png" alt="2D & 3D Architectural Drawings"
+                                style="width: 48px; height: 48px; vertical-align: middle;">
+                        </div>
                         <h3 class="card-title">2D & 3D Architectural Drawings</h3>
                         <p class="card-text">Comprehensive floor plans, elevations, and detailed architectural models
                             designed for precision and aesthetics.</p>
@@ -309,7 +316,10 @@
 
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">🏠</div>
+                        <div class="card-icon" style="margin-bottom: 1rem;">
+                            <img src="images/icons/3d-house.png" alt="Interior Layouts & Visualizations"
+                                style="width: 48px; height: 48px; vertical-align: middle;">
+                        </div>
                         <h3 class="card-title">Interior Layouts & Visualizations</h3>
                         <p class="card-text">Expert space planning and photorealistic 3D interior renders that bring
                             your dream space to life before execution.</p>
@@ -319,7 +329,10 @@
 
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">🏗️</div>
+                        <div class="card-icon" style="margin-bottom: 1rem;">
+                            <img src="images/icons/structural-drawing.png" alt="Structural Drawings & Working Plans"
+                                style="width: 48px; height: 48px; vertical-align: middle;">
+                        </div>
                         <h3 class="card-title">Structural Drawings & Working Plans</h3>
                         <p class="card-text">Detailed structural engineering drawings and execution plans to ensure the
                             strength and safety of your building.</p>
@@ -329,7 +342,10 @@
 
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">📋</div>
+                        <div class="card-icon" style="margin-bottom: 1rem;">
+                            <img src="images/icons/ppt.png" alt="BOQ & Estimation Services"
+                                style="width: 48px; height: 48px; vertical-align: middle;">
+                        </div>
                         <h3 class="card-title">BOQ & Estimation Services</h3>
                         <p class="card-text">Accurate bill of quantities and project cost estimation to help you plan
                             your budget with zero surprises.</p>
@@ -340,7 +356,54 @@
         </div>
     </section>
 
+    <!-- How It Works Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">A simple, transparent, and seamless process to get your designs delivered
+                </p>
+            </div>
 
+            <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                <div class="card">
+                    <div class="card-content" style="text-align: center; align-items: center;">
+                        <div class="card-icon" style="font-size: 3rem; margin-bottom: 1rem;">1️⃣</div>
+                        <h3 class="card-title" style="text-align: center;">Choose Service</h3>
+                        <p class="card-text" style="text-align: center;">Select from our wide range of services like 2D
+                            Layouts, 3D Elevations, or Structural Designs based on your project needs.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content" style="text-align: center; align-items: center;">
+                        <div class="card-icon" style="font-size: 3rem; margin-bottom: 1rem;">2️⃣</div>
+                        <h3 class="card-title" style="text-align: center;">Get Details & Estimate</h3>
+                        <p class="card-text" style="text-align: center;">Use our quick estimator tool to get instant
+                            pricing, and provide your plot dimensions along with specific requirements.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content" style="text-align: center; align-items: center;">
+                        <div class="card-icon" style="font-size: 3rem; margin-bottom: 1rem;">3️⃣</div>
+                        <h3 class="card-title" style="text-align: center;">Track & Collaborate</h3>
+                        <p class="card-text" style="text-align: center;">Monitor your project's progress in real-time
+                            through your personalized dashboard and collaborate with our design team.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content" style="text-align: center; align-items: center;">
+                        <div class="card-icon" style="font-size: 3rem; margin-bottom: 1rem;">4️⃣</div>
+                        <h3 class="card-title" style="text-align: center;">Final Delivery</h3>
+                        <p class="card-text" style="text-align: center;">Download your high-quality drawings and
+                            photorealistic renders directly from your dashboard once completed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- CTA Subscription Section -->
     <section class="cta-subscription">
@@ -488,9 +551,10 @@
         }
 
         function updateArea() {
-            const depth = document.getElementById('calc-depth').value || 0;
-            const width = document.getElementById('calc-width').value || 0;
-            const area = depth * width;
+            const depth = parseFloat(document.getElementById('calc-depth').value) || 0;
+            const width = parseFloat(document.getElementById('calc-width').value) || 0;
+            const floor = parseInt(document.getElementById('calc-floor').value) || 1;
+            const area = depth * width * floor;
             document.getElementById('calc-area').value = area > 0 ? area : '';
             // Hide result if dimensions change
             document.getElementById('estimator-result').style.display = 'none';
@@ -512,20 +576,35 @@
             }
 
             let baseCost = 0;
-            const effectiveArea = area * floor;
+            const effectiveArea = area; // The area value now already includes the floor multiplier
             const elevationVal = document.getElementById('calc-elevation').value;
 
             // 1. Calculate Core Service Price
             if (selectedService === '2D Layout Plan') {
-                baseCost = (effectiveArea > 2000) ? effectiveArea * 1 : 1999;
+                //baseCost = (effectiveArea > (2000 * floor)) ? effectiveArea * 1 : (1999 * floor);
+                baseCost = effectiveArea * 1.5;
+                if (baseCost < 3000) {
+                    baseCost = 3000;
+                }
             } else if (selectedService === '3D Front Elevation') {
-                baseCost = (effectiveArea > 2000) ? effectiveArea * 3 : 5000;
+                // baseCost = (effectiveArea > (2000 * floor)) ? effectiveArea * 3 : (5000 * floor);
+                baseCost = effectiveArea * 3;
+                if (baseCost < 5000) {
+                    baseCost = 5000;
+                }
                 // If they picked None in elevation for 3D tab, force it or handle it
                 // We'll treat the 3D tab as a package that *at least* includes front if none is selected
             } else if (selectedService === 'Structural Drawings') {
-                baseCost = (effectiveArea > 2000) ? effectiveArea * 3 : 5000;
+                // baseCost = (effectiveArea > (2000 * floor)) ? effectiveArea * 3 : (5000 * floor);
+                baseCost = effectiveArea * 3;
+                if (baseCost < 5000) {
+                    baseCost = 5000;
+                }
             } else {
-                baseCost = effectiveArea * 10;
+                baseCost = effectiveArea * 3;
+                if (baseCost < 5000) {
+                    baseCost = 5000;
+                }
             }
 
             // 2. Add Elevation Cost if selected (unless it's the primary service already)
@@ -533,7 +612,7 @@
             // We only add EXTRA if 'side' or 'both' is selected in the elevation dropdown.
 
             if (elevationVal !== 'none') {
-                let elevationRate = (effectiveArea > 2000) ? effectiveArea * 3 : 5000;
+                let elevationRate = (effectiveArea > (2000 * floor)) ? effectiveArea * 3 : (5000 * floor);
 
                 if (selectedService === '3D Front Elevation') {
                     // Already included 'front' in baseCost.
@@ -649,8 +728,9 @@
                 if (btn) btn.disabled = true;
 
                 // 1. Fetch packages to find a match
-                // 1. Fetch packages to find a match
                 const packages = await publicAPI.getPackages();
+
+                console.log("packages: ", packages);
 
                 // Filter only SERVICE packages (exclude subscriptions)
                 const servicePackages = packages.filter(p => !p.isSubscription);

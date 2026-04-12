@@ -6,8 +6,10 @@ import com.nakshedekho.model.DesignPackage;
 import com.nakshedekho.model.InteriorProject;
 import com.nakshedekho.model.ProjectStage;
 import com.nakshedekho.model.User;
+import com.nakshedekho.security.InputSanitizer;
 import com.nakshedekho.service.DesignPackageService;
 import com.nakshedekho.service.InteriorProjectService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,45 +22,16 @@ import com.nakshedekho.service.PaymentService;
 @RestController
 @RequestMapping("/api/manager")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class ManagerController {
 
     private final InteriorProjectService projectService;
     private final DesignPackageService packageService;
     private final PaymentService paymentService;
 
-    // Package Management
+    // Package Management (READ ONLY - managers can view packages but not modify them)
     @GetMapping("/packages")
     public ResponseEntity<List<DesignPackage>> getAllPackages() {
         return ResponseEntity.ok(packageService.getAllPackages());
-    }
-
-    @PostMapping("/packages")
-    public ResponseEntity<?> createPackage(@RequestBody DesignPackage designPackage) {
-        try {
-            DesignPackage saved = packageService.createPackage(designPackage);
-            return ResponseEntity.ok(saved);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
-    }
-
-    @PutMapping("/packages/{id}")
-    public ResponseEntity<?> updatePackage(
-            @PathVariable Long id,
-            @RequestBody DesignPackage designPackage) {
-        try {
-            DesignPackage updated = packageService.updatePackage(id, designPackage);
-            return ResponseEntity.ok(updated);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
-    }
-
-    @DeleteMapping("/packages/{id}")
-    public ResponseEntity<Void> deletePackage(@PathVariable Long id) {
-        packageService.deletePackage(id);
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/projects")
@@ -83,11 +56,10 @@ public class ManagerController {
     @PutMapping("/projects/{id}")
     public ResponseEntity<InteriorProject> updateProject(
             @PathVariable Long id,
-            @RequestBody ProjectUpdateRequest request,
+            @Valid @RequestBody ProjectUpdateRequest request,
             @AuthenticationPrincipal User user) {
         InteriorProject project = projectService.getProjectById(id);
 
-        // Verify the project is assigned to this manager
         if (project.getManager() == null || !project.getManager().getId().equals(user.getId())) {
             return ResponseEntity.status(403).build();
         }
@@ -97,20 +69,41 @@ public class ManagerController {
     }
 
     @GetMapping("/projects/{id}/stages")
-    public ResponseEntity<List<ProjectStage>> getProjectStages(@PathVariable Long id) {
+    public ResponseEntity<List<ProjectStage>> getProjectStages(@PathVariable Long id,
+            @AuthenticationPrincipal User user) {
+        InteriorProject project = projectService.getProjectById(id);
+        // FIX: Ownership check — manager can only view stages of their own projects
+        if (project.getManager() == null || !project.getManager().getId().equals(user.getId())) {
+            return ResponseEntity.status(403).build();
+        }
         return ResponseEntity.ok(projectService.getProjectStages(id));
     }
 
     @PutMapping("/stages/{stageId}")
     public ResponseEntity<ProjectStage> updateStage(
             @PathVariable Long stageId,
-            @RequestBody StageUpdateRequest request) {
+            @Valid @RequestBody StageUpdateRequest request,
+            @AuthenticationPrincipal User user) {
+        ProjectStage stage = projectService.getStageById(stageId);
+        if (stage.getProject().getManager() == null ||
+                !stage.getProject().getManager().getId().equals(user.getId())) {
+            return ResponseEntity.status(403).build();
+        }
+
+        // Sanitize free-text fields before persistence
+        if (request.getNotes() != null)
+            request.setNotes(InputSanitizer.sanitizeText(request.getNotes()));
+        if (request.getFileUrl() != null) {
+            String safeUrl = InputSanitizer.sanitizeUrl(request.getFileUrl());
+            request.setFileUrl(safeUrl); // null if URL was dangerous
+        }
+
         ProjectStage updated = projectService.updateStage(stageId, request);
         return ResponseEntity.ok(updated);
     }
 
     @PostMapping("/payments/request")
-    public ResponseEntity<?> requestPayment(@RequestBody com.nakshedekho.dto.PaymentRequestDTO request,
+    public ResponseEntity<?> requestPayment(@Valid @RequestBody com.nakshedekho.dto.PaymentRequestDTO request,
             @AuthenticationPrincipal User user) {
         try {
             InteriorProject project = projectService.getProjectById(request.getProjectId());

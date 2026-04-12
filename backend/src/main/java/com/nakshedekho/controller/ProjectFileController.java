@@ -2,14 +2,18 @@ package com.nakshedekho.controller;
 
 import com.nakshedekho.model.InteriorProject;
 import com.nakshedekho.model.ProjectFile;
+import com.nakshedekho.model.Role;
 import com.nakshedekho.model.User;
 import com.nakshedekho.service.FileUploadService;
 import com.nakshedekho.service.InteriorProjectService;
 import com.nakshedekho.service.ProjectFileService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,13 +25,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/files")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class ProjectFileController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectFileController.class);
 
     private final ProjectFileService projectFileService;
     private final InteriorProjectService projectService;
     private final FileUploadService fileUploadService;
+
+    // ─── Upload ────────────────────────────────────────────────────────────────
 
     @PostMapping("/upload")
     public ResponseEntity<ProjectFile> uploadFile(
@@ -38,13 +45,10 @@ public class ProjectFileController {
 
         InteriorProject project = projectService.getProjectById(projectId);
 
-        // Verify user owns this project or is a manager/owner
-        boolean hasAccess = project.getCustomer().getId().equals(user.getId()) ||
-                (project.getManager() != null && project.getManager().getId().equals(user.getId())) ||
-                user.getRole().name().equals("OWNER_ADMIN");
-
-        if (!hasAccess) {
-            return ResponseEntity.status(403).build();
+        if (!hasProjectAccess(user, project)) {
+            logger.warn("IDOR attempt: user {} tried to upload to project {} (owner: {})",
+                    user.getId(), projectId, project.getCustomer().getId());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         String storedFileName = fileUploadService.storeFile(file);
@@ -63,37 +67,51 @@ public class ProjectFileController {
         return ResponseEntity.ok(savedFile);
     }
 
+    // ─── Download ──────────────────────────────────────────────────────────────
+
+    /**
+     * GET /api/files/download/{fileName}
+     * IDOR FIX: Previously this endpoint was fully unauthenticated — any URL-guesser
+     * could download any project file. Now the caller must be authenticated AND must
+     * own or be assigned to a project that contains a file with this name.
+     */
     @GetMapping("/download/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
+    public ResponseEntity<Resource> downloadFile(
+            @PathVariable String fileName,
+            @AuthenticationPrincipal User user) {
+
+        // Owners can skip the per-project lookup
+        if (user.getRole() != Role.OWNER_ADMIN) {
+            // Verify the requested file belongs to a project that this user has access to
+            boolean authorised = projectFileService.isFileAccessibleByUser(fileName, user.getId());
+            if (!authorised) {
+                logger.warn("IDOR attempt: user {} tried to download file '{}' without project access",
+                        user.getId(), fileName);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+
         try {
             Path filePath = fileUploadService.getFilePath(fileName);
             Resource resource = new UrlResource(filePath.toUri());
 
-            if (resource.exists()) {
-                String contentType = "application/octet-stream";
-                String lowercaseFileName = fileName.toLowerCase();
-
-                if (lowercaseFileName.endsWith(".jpg") || lowercaseFileName.endsWith(".jpeg")) {
-                    contentType = "image/jpeg";
-                } else if (lowercaseFileName.endsWith(".png")) {
-                    contentType = "image/png";
-                } else if (lowercaseFileName.endsWith(".gif")) {
-                    contentType = "image/gif";
-                } else if (lowercaseFileName.endsWith(".pdf")) {
-                    contentType = "application/pdf";
-                }
-
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(contentType))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                        .body(resource);
-            } else {
+            if (!resource.exists()) {
                 return ResponseEntity.notFound().build();
             }
+
+            String contentType = resolveContentType(fileName.toLowerCase());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+
         } catch (Exception e) {
+            logger.error("File download failed for '{}'", fileName, e);
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    // ─── List files for a project ──────────────────────────────────────────────
 
     @GetMapping("/project/{projectId}")
     public ResponseEntity<List<ProjectFile>> getProjectFiles(
@@ -102,18 +120,17 @@ public class ProjectFileController {
 
         InteriorProject project = projectService.getProjectById(projectId);
 
-        // Verify user has access (customer, manager, or owner)
-        boolean hasAccess = project.getCustomer().getId().equals(user.getId()) ||
-                (project.getManager() != null && project.getManager().getId().equals(user.getId())) ||
-                user.getRole().name().equals("OWNER_ADMIN");
-
-        if (!hasAccess) {
-            return ResponseEntity.status(403).build();
+        if (!hasProjectAccess(user, project)) {
+            logger.warn("IDOR attempt: user {} tried to list files of project {} (owner: {})",
+                    user.getId(), projectId, project.getCustomer().getId());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         List<ProjectFile> files = projectFileService.getProjectFiles(projectId);
         return ResponseEntity.ok(files);
     }
+
+    // ─── Delete ────────────────────────────────────────────────────────────────
 
     @DeleteMapping("/{fileId}")
     public ResponseEntity<Void> deleteFile(
@@ -123,16 +140,13 @@ public class ProjectFileController {
         ProjectFile file = projectFileService.getFileById(fileId);
         InteriorProject project = file.getProject();
 
-        // Customer can delete their own files, or manager/owner
-        boolean canDelete = project.getCustomer().getId().equals(user.getId()) ||
-                (project.getManager() != null && project.getManager().getId().equals(user.getId())) ||
-                user.getRole().name().equals("OWNER_ADMIN");
-
-        if (!canDelete) {
-            return ResponseEntity.status(403).build();
+        if (!hasProjectAccess(user, project)) {
+            logger.warn("IDOR attempt: user {} tried to delete file {} from project {} (owner: {})",
+                    user.getId(), fileId, project.getId(), project.getCustomer().getId());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        // Try to delete physical file if possible
+        // Delete the physical file from disk
         try {
             String fileUrl = file.getFileUrl();
             if (fileUrl != null && fileUrl.contains("/download/")) {
@@ -140,11 +154,35 @@ public class ProjectFileController {
                 fileUploadService.deleteFile(physicalName);
             }
         } catch (Exception e) {
-            // Log error but continue deleting record
-            System.err.println("Failed to delete physical file: " + e.getMessage());
+            logger.error("Failed to delete physical file for record {}: {}", fileId, e.getMessage());
         }
 
         projectFileService.deleteFile(fileId);
         return ResponseEntity.ok().build();
+    }
+
+    // ─── Helpers ───────────────────────────────────────────────────────────────
+
+    /**
+     * Returns true if the user is authorised to access files belonging to this project:
+     * - OWNER_ADMIN: always
+     * - MANAGER_ADMIN: only if assigned to this project
+     * - CUSTOMER: only if they are the project owner
+     */
+    private boolean hasProjectAccess(User user, InteriorProject project) {
+        return switch (user.getRole()) {
+            case OWNER_ADMIN -> true;
+            case MANAGER_ADMIN -> project.getManager() != null
+                    && project.getManager().getId().equals(user.getId());
+            case CUSTOMER -> project.getCustomer().getId().equals(user.getId());
+        };
+    }
+
+    private String resolveContentType(String lowerName) {
+        if (lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg")) return "image/jpeg";
+        if (lowerName.endsWith(".png"))  return "image/png";
+        if (lowerName.endsWith(".gif"))  return "image/gif";
+        if (lowerName.endsWith(".pdf"))  return "application/pdf";
+        return "application/octet-stream";
     }
 }

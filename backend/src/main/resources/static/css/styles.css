@@ -59,6 +59,11 @@ body {
     overflow-x: hidden;
 }
 
+img, picture, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+}
+
 /* ===== TYPOGRAPHY ===== */
 h1,
 h2,
@@ -137,7 +142,7 @@ a {
 }
 
 .logo img {
-    height: 100px;
+    height: 50px;
     width: auto;
     object-fit: contain;
     transition: var(--transition-smooth);
@@ -150,7 +155,7 @@ a {
 }
 
 .logo-brand {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -0.5px;
     line-height: 1;
@@ -811,6 +816,10 @@ a {
 
 .footer-section a:hover {
     color: var(--accent-cyan);
+}
+
+.footer-section a.btn:hover {
+    color: var(--white);
 }
 
 .footer-bottom {
@@ -2360,7 +2369,7 @@ a {
     }
 
     .logo img {
-        height: 50px !important;
+        height: 20px !important;
     }
 
     .logo-brand {

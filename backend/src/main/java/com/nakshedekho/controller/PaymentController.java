@@ -1,18 +1,15 @@
 package com.nakshedekho.controller;
 
 import com.nakshedekho.service.PaymentService;
-import com.razorpay.RazorpayException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payment")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class PaymentController {
 
@@ -21,8 +18,16 @@ public class PaymentController {
     @Value("${razorpay.key.id}")
     private String razorpayKeyId;
 
+    /**
+     * Creates a Razorpay order.
+     * DISABLED: Using the secure project-linked `/api/customer/payments/{id}/init` instead 
+     * to prevent creating arbitrary payment orders.
+     */
+    /*
     @PostMapping(value = "/create-order", produces = "application/json")
-    public ResponseEntity<String> createOrder(@RequestBody Map<String, Object> data) {
+    public ResponseEntity<String> createOrder(
+            @RequestBody Map<String, Object> data,
+            @AuthenticationPrincipal User user) {
         try {
             BigDecimal amount = new BigDecimal(data.get("amount").toString());
             String order = paymentService.createOrder(amount);
@@ -37,6 +42,7 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(errorJson);
         }
     }
+    */
 
     @PostMapping("/verify-payment")
     public ResponseEntity<Map<String, Object>> verifyPayment(@RequestBody Map<String, String> paymentData) {

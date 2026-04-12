@@ -1,23 +1,27 @@
-# NaksheDekho - Git Ignore File
+# =============================================================================
+# NaksheDekho — Git Ignore File
+# =============================================================================
 
-# ===== BACKEND (Java/Maven) =====
+# ── Secrets & Environment Variables (NEVER commit!) ───────────────────────────
+.env
+.env.local
+.env.production
+# Template SHOULD be committed
+!.env.example
+# Docker override with local secrets
+docker-compose.override.yml
 
-# Compiled class files
+# ── Spring Boot Config with Real Credentials ──────────────────────────────────
+backend/src/main/resources/application.properties
+backend/src/main/resources/application-prod.properties
+backend/src/main/resources/application-local.properties
+
+# ── Java / Maven ──────────────────────────────────────────────────────────────
 *.class
-
-# Log files
-*.log
-
-# Package Files
 *.jar
 *.war
 *.nar
 *.ear
-*.zip
-*.tar.gz
-*.rar
-
-# Maven
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -29,101 +33,62 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
-# Eclipse
-.classpath
-.project
-.settings/
+# Startup scripts with local paths
+backend/start.ps1
 
-# IntelliJ IDEA
+# ── Uploads / User Files ──────────────────────────────────────────────────────
+backend/uploads/
+uploads/
+files/
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Frontend / Node ───────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/build
+/dist
+
+# ── IDE Files ─────────────────────────────────────────────────────────────────
+.vscode/
 .idea/
 *.iws
 *.iml
 *.ipr
 out/
+.classpath
+.project
+.settings/
 
-# NetBeans
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-# VS Code
-.vscode/
-
-# ===== FRONTEND =====
-
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Production builds
-/build
-/dist
-
-# ===== DATABASE =====
-
-# MySQL
-*.sql~
-*.sql.backup
-
-# ===== SYSTEM FILES =====
-
-# macOS
+# ── OS Files ──────────────────────────────────────────────────────────────────
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Windows
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-
-# Linux
 *~
 
-# ===== APPLICATION SPECIFIC =====
-
-# Application properties with sensitive data
-# (Uncomment if you have separate prod config)
-# application-prod.properties
-
-# Uploaded files
-uploads/
-files/
-
-# Logs
-logs/
-*.log
-
-# Temporary files
-*.tmp
-*.temp
-*.swp
-*.swo
-
-# Environment variables
-.env
-.env.local
-.env.production
-
-# ===== SECURITY =====
-
-# Don't commit sensitive data
+# ── Security Certificates ─────────────────────────────────────────────────────
 *.pem
 *.key
 *.cert
 secrets/
 credentials/
 
-# ⚠️ CRITICAL: application.properties contains real passwords (DB, JWT, Razorpay, Email)
-# NEVER commit this to GitHub!
-backend/src/main/resources/application.properties
-backend/src/main/resources/application-prod.properties
-backend/src/main/resources/application-local.properties
+# ── Temporary / Backup Files ──────────────────────────────────────────────────
+*.tmp
+*.temp
+*.swp
+*.swo
+*.backup
+*.sql~
+*.sql.backup
 
-# ===== GEMINI AI =====
+# ── Gemini AI ─────────────────────────────────────────────────────────────────
 .gemini/

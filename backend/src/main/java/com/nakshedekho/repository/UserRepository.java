@@ -19,4 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRoleAndActiveTrue(Role role);
 
     List<User> findByActiveSubscription_Id(Long packageId);
+
+    /** Used by the password-reset flow — looks up by SHA-256 hash of the emailed token. */
+    Optional<User> findByResetToken(String resetTokenHash);
 }
+
